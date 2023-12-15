@@ -3,5 +3,5 @@
 </template>
 
 <script setup lang="ts">
-  import WatchableList from "@/components/WatchableList.vue";
+import WatchableList from '@/components/WatchableList.vue'
 </script>

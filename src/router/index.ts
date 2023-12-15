@@ -21,8 +21,8 @@ const router = createRouter({
       path: '/watchable/:id',
       name: 'watchableDetail',
       props: true,
-      component: () => import('../views/WatchableDetail.vue'),
-    },
+      component: () => import('../views/WatchableDetail.vue')
+    }
   ]
 })
 

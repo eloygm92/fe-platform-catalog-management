@@ -8,11 +8,11 @@
   font-weight: normal;
 }*/
 body {
-    -ms-overflow-style: none;
+  -ms-overflow-style: none;
 }
 
 body::-webkit-scrollbar {
-    display: none;
+  display: none;
 }
 
 /*a,

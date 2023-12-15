@@ -1,6 +1,6 @@
 <template>
   <el-menu mode="horizontal" @select="handleSelect" class="justify-start">
-    <el-menu-item v-for="item in menu" :key="item.index" :index="item.index" >
+    <el-menu-item v-for="item in menu" :key="item.index" :index="item.index">
       {{ item.title }}
     </el-menu-item>
   </el-menu>
@@ -35,6 +35,4 @@ const handleSelect = (key: string) => {
 }
 </script>
 
-<style scoped>
-
-</style>
+<style scoped></style>

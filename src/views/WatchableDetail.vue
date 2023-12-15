@@ -13,28 +13,37 @@
 </template>
 
 <script setup lang="ts">
-import {onBeforeMount, ref, watch} from 'vue'
-  import * as APIHandler from '@/lib/APIHandler'
-  import type { IWatchable } from '@/lib/types/customTypes'
-  import { useRoute } from "vue-router";
-  import {useContentStore} from "@/stores/content";
+import { onBeforeMount, ref, watch } from 'vue'
+import * as APIHandler from '@/lib/APIHandler'
+import type { IWatchable } from '@/lib/types/customTypes'
+import { useRoute } from 'vue-router'
+import { useContentStore } from '@/stores/content'
 
-  const route = useRoute();
-  const store = useContentStore();
+const route = useRoute()
+const store = useContentStore()
 
-  const watchable = ref<IWatchable>(store.watchable)
-  const image_url = ref<string>(watchable.value.poster_path ? import.meta.env.VITE_IMG_CDN + watchable.value.poster_path : import.meta.env.VITE_404_IMG);
+const watchable = ref<IWatchable>(store.watchable)
+const image_url = ref<string>(
+  watchable.value.poster_path
+    ? import.meta.env.VITE_IMG_CDN + watchable.value.poster_path
+    : import.meta.env.VITE_404_IMG
+)
 
-  onBeforeMount(async () => {
-    const response = await APIHandler.get(import.meta.env.VITE_API + `watchable/${route.params.id}`);
-    if (response) {
-      watchable.value = response;
-    }
-  })
+onBeforeMount(async () => {
+  const response = await APIHandler.get(import.meta.env.VITE_API + `watchable/${route.params.id}`)
+  if (response) {
+    watchable.value = response
+  }
+})
 
-  watch(() => watchable.value, (newValue) => {
-    image_url.value = newValue.poster_path ? import.meta.env.VITE_IMG_CDN + 'w300/' + newValue.poster_path : import.meta.env.VITE_404_IMG;
-  })
+watch(
+  () => watchable.value,
+  (newValue) => {
+    image_url.value = newValue.poster_path
+      ? import.meta.env.VITE_IMG_CDN + 'w300/' + newValue.poster_path
+      : import.meta.env.VITE_404_IMG
+  }
+)
 </script>
 
 <style scoped>
