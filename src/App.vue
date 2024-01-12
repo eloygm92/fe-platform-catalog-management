@@ -4,7 +4,7 @@ import NavBar from '@/components/NavBar.vue'
 import { useRoute } from 'vue-router'
 import LoginPage from '@/views/LoginPage.vue'
 
-const route = useRoute();
+const route = useRoute()
 </script>
 
 <template>

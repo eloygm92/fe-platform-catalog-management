@@ -48,7 +48,7 @@ const dataLogin = reactive({
 })
 
 const handleSelect = (key: string) => {
-  if (Number(key) < menu.value.length) router.push(menu.value[Number(key) - 1].path)
+  if (Number(key) < menu.value.length + 1) router.push(menu.value[Number(key) - 1].path)
   else router.push(dataLogin.path)
 }
 </script>

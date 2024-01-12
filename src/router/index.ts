@@ -6,8 +6,24 @@ const router = createRouter({
   routes: [
     {
       path: '/',
+      //alias: ['/films', '/series', '/populars'],
       name: 'home',
       component: HomeView
+    },
+    {
+      path: '/films',
+      name: 'films',
+      component: () => import('../views/MovieList.vue')
+    },
+    {
+      path: '/series',
+      name: 'series',
+      component: () => import('../views/TvList.vue')
+    },
+    {
+      path: '/populars',
+      name: 'populars',
+      component: () => import('../views/PopularsList.vue')
     },
     {
       path: '/about',
