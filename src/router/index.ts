@@ -22,8 +22,15 @@ const router = createRouter({
       name: 'watchableDetail',
       props: true,
       component: () => import('../views/WatchableDetail.vue')
+    },
+    {
+      path: '/login',
+      name: 'loginPage',
+      component: () => import('../views/LoginPage.vue')
     }
   ]
 })
+
+//TODO: Add auth guard and configure non public routes
 
 export default router

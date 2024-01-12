@@ -1,10 +1,17 @@
 <script setup lang="ts">
 import { RouterView } from 'vue-router'
 import NavBar from '@/components/NavBar.vue'
+import { useRoute } from 'vue-router'
+import LoginPage from '@/views/LoginPage.vue'
+
+const route = useRoute();
 </script>
 
 <template>
-  <el-container class="container mx-auto min-h-fit">
+  <main v-if="route.fullPath === '/login'">
+    <LoginPage />
+  </main>
+  <el-container v-else class="container mx-auto min-h-fit">
     <el-header>
       <NavBar />
     </el-header>

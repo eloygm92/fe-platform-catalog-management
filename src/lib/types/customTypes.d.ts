@@ -13,3 +13,14 @@ export declare type IWatchable = {
   created_at: string
   updated_at: string
 }
+
+export declare type IUser = {
+  id: number
+  username: string
+  email: string
+  password: string
+  refresh_token: string
+  created_at: string
+  updated_at: string
+  deactivate_at: string
+}

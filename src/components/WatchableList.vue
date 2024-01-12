@@ -4,12 +4,13 @@
     infinite-scroll-immediate="false"
     class="flex justify-start flex-wrap overflow-auto infinite-height"
   >
-    <WatchableGrid
-      v-if="watchables.items?.length"
-      v-for="watchable in watchables.items"
-      :key="watchable.id"
-      :watchable="watchable"
-    />
+    <div v-if="watchables.items?.length">
+      <WatchableGrid
+        v-for="watchable in watchables.items"
+        :key="watchable.id"
+        :watchable="watchable"
+      />
+    </div>
   </div>
 </template>
 
