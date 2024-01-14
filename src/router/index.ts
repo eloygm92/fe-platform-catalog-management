@@ -6,7 +6,6 @@ const router = createRouter({
   routes: [
     {
       path: '/',
-      //alias: ['/films', '/series', '/populars'],
       name: 'home',
       component: HomeView
     },

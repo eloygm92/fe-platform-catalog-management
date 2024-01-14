@@ -127,7 +127,8 @@ const loginButton = () => {
     })
     .finally(() => {
       if (cookies.get('access_token')) {
-        router.push({ name: 'home' })
+        if (window.history.length > 0) router.back()
+        else router.push({ name: 'home' })
       }
     })
 }
