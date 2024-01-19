@@ -1,6 +1,30 @@
 import { useUserStore } from '@/stores/user'
+import { useCookies } from 'vue3-cookies'
 export async function get(url) {
-  return await fetch(url).then((response) => response.json())
+  const { cookies } = useCookies()
+  return await fetch(import.meta.env.VITE_API + url, {
+    method: 'GET',
+    headers: {
+      Accept: 'application/json',
+      'Content-Type': 'application/json',
+      Authorization: 'Bearer ' + cookies.get('access_token')
+    },
+    credentials: 'include'
+  }).then((response) => response.json())
+}
+
+export async function patch(url, data) {
+  const { cookies } = useCookies()
+  return await fetch(import.meta.env.VITE_API + url, {
+    method: 'PATCH',
+    headers: {
+      Accept: 'application/json',
+      'Content-Type': 'application/json',
+      Authorization: 'Bearer ' + cookies.get('access_token')
+    },
+    credentials: 'include',
+    body: JSON.stringify(data)
+  })
 }
 
 export async function logout(access_token: string) {
@@ -19,4 +43,15 @@ export async function logout(access_token: string) {
       }
     })
   })
+}
+
+export async function refreshToken() {
+  return await fetch(import.meta.env.VITE_API + 'auth/refresh', {
+    method: 'GET',
+    headers: {
+      Accept: 'application/json',
+      'Content-Type': 'application/json'
+    },
+    credentials: 'include'
+  }).then((response) => response.json())
 }

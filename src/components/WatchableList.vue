@@ -42,10 +42,9 @@ const watchables = ref<{ items: object[]; totalItems: number; page: number; size
 
 onBeforeMount(async () => {
   const response = await APIHandler.get(
-    import.meta.env.VITE_API +
-      `watchable?page=${page.value}&size=${size.value}&sort=${sort.value}${
-        filter.value ? `&filter=${filter.value}` : ''
-      }`
+    `watchable?page=${page.value}&size=${size.value}&sort=${sort.value}${
+      filter.value ? `&filter=${filter.value}` : ''
+    }`
   )
   if (response) {
     watchables.value = response
@@ -57,10 +56,9 @@ const load = async () => {
     //if (page.value < 3) {
     page.value++
     const response = await APIHandler.get(
-      import.meta.env.VITE_API +
-        `watchable?page=${page.value}&size=${size.value}&sort=${sort.value}${
-          filter.value ? `&filter=${filter.value}` : ''
-        }`
+      `watchable?page=${page.value}&size=${size.value}&sort=${sort.value}${
+        filter.value ? `&filter=${filter.value}` : ''
+      }`
     )
     if (response) {
       watchables.value.items = [...watchables.value.items, ...response.items]

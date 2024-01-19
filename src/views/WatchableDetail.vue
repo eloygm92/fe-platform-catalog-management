@@ -30,7 +30,7 @@ const image_url = ref<string>(
 )
 
 onBeforeMount(async () => {
-  const response = await APIHandler.get(import.meta.env.VITE_API + `watchable/${route.params.id}`)
+  const response = await APIHandler.get(`watchable/${route.params.id}`)
   if (response) {
     watchable.value = response
   }
