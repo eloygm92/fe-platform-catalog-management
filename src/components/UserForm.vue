@@ -2,8 +2,8 @@
   <el-form v-if="!loader" :model="formData" label-position="top" ref="form">
     <el-row :gutter="24">
       <el-col :span="24">
-        <el-form-item label="Nombre" prop="name">
-          <el-input v-model="formData.username" placeholder="Nombre" />
+        <el-form-item label="Nombre de Usuario" prop="username">
+          <el-input v-model="formData.username" placeholder="nick" />
         </el-form-item>
       </el-col>
     </el-row>
@@ -15,14 +15,9 @@
       </el-col>
     </el-row>
     <el-row v-if="!props.editData" :gutter="24">
-      <el-form-item label="Contraseña" prop="password">
-        <el-input type="password" v-model="formData.password" placeholder="Contraseña" />
-      </el-form-item>
-    </el-row>
-    <el-row :gutter="24">
       <el-col :span="24">
-        <el-form-item label="Email" prop="email">
-          <el-input v-model="formData.email" placeholder="Email" />
+        <el-form-item label="Contraseña" prop="password">
+          <el-input type="password" v-model="formData.password" placeholder="Contraseña" />
         </el-form-item>
       </el-col>
     </el-row>
@@ -50,9 +45,12 @@
 import { onBeforeMount, reactive, ref } from 'vue'
 import type { FormInstance } from 'element-plus'
 import * as APIHandler from '@/lib/APIHandler'
-import ButtonsForm from "@/components/ButtonsForm.vue";
+import ButtonsForm from '@/components/ButtonsForm.vue'
+import { useUserStore } from '@/stores/user'
 
-const emit = defineEmits(['update:dialogVisible', 'reload'])
+const userStore = useUserStore()
+
+const emit = defineEmits(['update:dialogVisible', 'reload', 'created'])
 
 const props = defineProps({
   editData: {
@@ -135,11 +133,12 @@ const sendChanges = async () => {
       }
     }
   } else {
-    const response = await APIHandler.post('user', formData)
+    const response = await APIHandler.post('auth/signup', formData)
     if (response.status === 201) {
       ElMessage.success('Usuario creado correctamente')
-      emit('update:dialogVisible', false)
-      emit('reload')
+      const responseData = response.json()
+      userStore.setUser(responseData)
+      emit('created')
     } else {
       ElMessage.error('Error al crear el usuario')
     }

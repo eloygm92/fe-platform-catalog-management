@@ -156,7 +156,7 @@ import { onBeforeMount, reactive, ref } from 'vue'
 import * as APIHandler from '@/lib/APIHandler'
 import { type FormInstance } from 'element-plus'
 import compare_elements from '@/lib/compare_elements'
-import ButtonsForm from "@/components/ButtonsForm.vue";
+import ButtonsForm from '@/components/ButtonsForm.vue'
 
 const emit = defineEmits(['update:dialogVisible', 'reload'])
 

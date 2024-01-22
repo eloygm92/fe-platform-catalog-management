@@ -13,6 +13,20 @@ export async function get(url) {
   }).then((response) => response.json())
 }
 
+export async function post(url, data) {
+  const { cookies } = useCookies()
+  return await fetch(import.meta.env.VITE_API + url, {
+    method: 'POST',
+    headers: {
+      Accept: 'application/json',
+      'Content-Type': 'application/json',
+      Authorization: 'Bearer ' + cookies.get('access_token')
+    },
+    credentials: 'include',
+    body: JSON.stringify(data)
+  })
+}
+
 export async function patch(url, data) {
   const { cookies } = useCookies()
   return await fetch(import.meta.env.VITE_API + url, {

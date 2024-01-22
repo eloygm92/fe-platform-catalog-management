@@ -69,6 +69,8 @@ router.beforeEach(async (to, from, next) => {
     } else {
       userStore.setUser(undefined)
     }
+  } else {
+    to.name === 'loginPage' ? next({ name: 'home' }) : next()
   }
 
   if (to.name === 'adminPage') {

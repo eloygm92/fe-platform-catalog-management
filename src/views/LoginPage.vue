@@ -6,7 +6,7 @@
       <div
         class="bg-white shadow-md border border-gray-200 rounded-lg max-w-md p-4 sm:p-6 lg:p-8 dark:bg-gray-800 dark:border-gray-700"
       >
-        <form class="space-y-6" @submit.prevent>
+        <form v-if="!visibleRegister" class="space-y-6" @submit.prevent>
           <h3 class="text-xl font-medium text-gray-900 dark:text-white">
             Inicia sesión en la plataforma
           </h3>
@@ -77,6 +77,28 @@
             Inicia Sesion
           </button>
         </form>
+        <el-divider v-if="!visibleRegister" content-position="left"
+          >¿Todavía no estas registrado?</el-divider
+        >
+        <el-divider v-else content-position="left">¿Estas registrado?</el-divider>
+        <el-button
+          v-if="visibleRegister"
+          link
+          type="primary"
+          class="w-full text-white bg-green-700 hover:bg-green-800 focus:ring-4 focus:ring-green-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-green-600 dark:hover:bg-green-700 dark:focus:ring-green-800 mb-2"
+          @click="updateVisibleRegister"
+          >Inicia Sesión</el-button
+        >
+        <el-button
+          v-if="!visibleRegister"
+          link
+          type="primary"
+          class="w-full text-white bg-green-700 hover:bg-green-800 focus:ring-4 focus:ring-green-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-green-600 dark:hover:bg-green-700 dark:focus:ring-green-800"
+          @click="updateVisibleRegister"
+        >
+          Registrate
+        </el-button>
+        <UserForm v-else @created="createdUser" />
       </div>
     </div>
   </div>
@@ -87,6 +109,7 @@ import { ref, watch } from 'vue'
 import { useCookies } from 'vue3-cookies'
 import { useRouter } from 'vue-router'
 import { useUserStore } from '@/stores/user'
+import UserForm from '@/components/UserForm.vue'
 
 const { cookies } = useCookies()
 const router = useRouter()
@@ -95,10 +118,11 @@ const userStore = useUserStore()
 const password = ref<string>(undefined)
 const username = ref<string>(undefined)
 const error = ref<boolean>(false)
-const reload = ref(0)
-const inputClass = ref(
+const reload = ref<number>(0)
+const inputClass = ref<string>(
   'bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white'
 )
+const visibleRegister = ref<boolean>(false)
 
 const loginButton = () => {
   fetch(import.meta.env.VITE_API + 'auth/signin/', {
@@ -141,6 +165,17 @@ watch(
     }
   }
 )
+
+const updateVisibleRegister = () => {
+  visibleRegister.value = !visibleRegister.value
+}
+
+const createdUser = () => {
+  if (cookies.get('access_token')) {
+    if (window.history.length > 0) router.back()
+    else router.push({ name: 'home' })
+  }
+}
 </script>
 
 <style scoped>

@@ -63,8 +63,8 @@ const menu = ref([
 
 const dataLogin = reactive({
   index: (menu.value.length + 1).toString(),
-  title: cookies.get('access_token') ? 'Logout' : 'Login',
-  path: cookies.get('access_token') ? '/logout' : '/login'
+  title: cookies.get('refresh_token') ? 'Logout' : 'Login',
+  path: cookies.get('refresh_token') ? '/logout' : '/login'
 })
 
 const handleSelect = (key: string) => {
