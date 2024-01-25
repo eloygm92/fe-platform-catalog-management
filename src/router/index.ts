@@ -64,10 +64,12 @@ const router = createRouter({
 const { cookies } = useCookies()
 
 router.beforeEach(async (to, from, next) => {
-  if (import.meta.env.VITE_DEVELOPMENT_STATUS) router.push({ name: 'loginPage' })
   const userStore = useUserStore()
   let isAuthenticated = cookies.get('access_token')
   const refreshToken = cookies.get('refresh_token')
+  if (import.meta.env.VITE_DEVELOPMENT_STATUS && to.name !== 'loginPage' && !isAuthenticated && !refreshToken)
+    next({ name: 'loginPage' })
+
   if (!isAuthenticated) {
     if (refreshToken) {
       await APIHandler.refreshToken()
