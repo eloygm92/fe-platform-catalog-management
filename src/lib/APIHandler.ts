@@ -1,6 +1,6 @@
 import { useUserStore } from '@/stores/user'
 import { useCookies } from 'vue3-cookies'
-export async function get(url) {
+export async function get(url: string) {
   const { cookies } = useCookies()
   return await fetch(import.meta.env.VITE_API + url, {
     method: 'GET',
@@ -13,7 +13,7 @@ export async function get(url) {
   }).then((response) => response.json())
 }
 
-export async function post(url, data) {
+export async function post(url: string, data: object) {
   const { cookies } = useCookies()
   return await fetch(import.meta.env.VITE_API + url, {
     method: 'POST',
@@ -27,7 +27,7 @@ export async function post(url, data) {
   })
 }
 
-export async function patch(url, data) {
+export async function patch(url: string, data: object) {
   const { cookies } = useCookies()
   return await fetch(import.meta.env.VITE_API + url, {
     method: 'PATCH',

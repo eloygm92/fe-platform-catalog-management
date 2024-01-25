@@ -123,8 +123,8 @@ const data = ref<object[]>([])
 const totalPages = ref<number>(0)
 const currentPage = ref<number>(1)
 const sizePage = ref<number>(10)
-const edit_id = ref<string>(undefined)
-const component_name = ref<string>(undefined)
+const edit_id = ref<number | undefined>(undefined)
+const component_name = ref<string | undefined>(undefined)
 const render = ref<boolean>(false)
 
 const mapperData = ref({
@@ -239,7 +239,7 @@ watch(
   }
 )
 
-const formatterText = (row, column, cellValue, index) => {
+const formatterText = (row: any, column: any, cellValue: any, index: any) => {
   if (column.property === 'poster_path') {
     return `<img src=${cellValue} alt="poster" class="w-20 h-20"/>`
   } else if (column.property === 'type') {
@@ -287,7 +287,7 @@ const captureVisible = (visible: boolean) => {
 const editElem = (id: string) => {
   render.value = true
   const splitProps = props.dataType.split('/')
-  edit_id.value = id
+  edit_id.value = Number(id)
   component_name.value = splitProps[0]
 }
 </script>

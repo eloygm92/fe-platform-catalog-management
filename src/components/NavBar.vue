@@ -36,7 +36,7 @@ const { cookies } = useCookies()
 const userStore = useUserStore()
 
 const reload = ref<number>(0)
-const circleUrl = ref<string>('https://cube.elemecdn.com/3/7c/3ea6beec64369c2642b92c6726f1epng.png')
+const circleUrl = ref<string>(import.meta.env.VITE_CIRCLE_AVATAR_IMG)
 
 const menu = ref([
   {

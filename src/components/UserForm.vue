@@ -35,6 +35,32 @@
         </el-form-item>
       </el-col>
     </el-row>
+<!--    <el-row :gutter="24">
+      <el-col :span="6">
+        <div class="flex justify-center"><span>Avatar Actual</span></div>
+        <el-image :close-on-press-escape="true" :src="formData?.avatar_img ? formData.avatar_img : default_image" />
+      </el-col>
+      <el-col :span="6">
+        <div class="flex justify-center"><span>Avatar Nuevo</span></div>
+        <el-image :close-on-press-escape="true" :src="formData?.newImage ? formData.newImage : default_image" />
+      </el-col>
+      <el-col :span="12">
+        <el-form-item label="Avatar" prop="avatar">
+&lt;!&ndash;          <el-input v-model="formData.avatar" placeholder="Avatar" />&ndash;&gt;
+          <el-upload drag accept="'jpg','png','jpeg','bmp'" :auto-upload="false" >
+            <div class="el-upload__text">
+              Arrastre aquí los ficheros o <br/><em>haga click para subirlos</em>
+            </div>
+            <template #tip>
+              <div class="el-upload__tip">
+                Los archivos jpg/png deben ser menores a 500kb
+              </div>
+            </template>
+          </el-upload>
+          <el-button type="primary" @click="previewChanges">Mostrar cambio</el-button>
+        </el-form-item>
+      </el-col>
+    </el-row>-->
     <el-divider />
     <ButtonsForm @reset="resetForm(form)" @create="sendChanges" />
   </el-form>
@@ -67,8 +93,11 @@ interface RuleForm {
   created_at: string | undefined
   updated_at: string | undefined
   deactivate_at: string | undefined
+/*  newImage: string | undefined
+  undefined: string | undefined*/
 }
 
+//const default_image = ref<string>(import.meta.env.VITE_CIRCLE_AVATAR_IMG)
 const form = ref<FormInstance>()
 const loader = ref<boolean>(true)
 const formData = reactive<RuleForm>({
@@ -78,7 +107,9 @@ const formData = reactive<RuleForm>({
   created_at: undefined,
   updated_at: undefined,
   deactivate_at: undefined,
-  role: undefined
+  role: undefined/*,
+  newImage: undefined,
+  avatar: undefined*/
 })
 const optionRoles = ref<object[]>([])
 const originalData = ref<object>(undefined)
@@ -106,6 +137,16 @@ onBeforeMount(async () => {
 const resetForm = (formEl: FormInstance | undefined) => {
   if (!formEl) return
   formEl.resetFields()
+}
+
+const previewChanges = () => {
+  const file = formData.avatar
+  console.log(formData)
+  if (file) {
+    const createBlob = new Blob([file], { type: 'image/jpeg' });
+    formData.newImage = URL.createObjectURL(createBlob);
+    console.log(formData.newImage)
+  }
 }
 
 const sendChanges = async () => {

@@ -1,15 +1,20 @@
 <template>
-  <div
-    v-infinite-scroll="load"
-    infinite-scroll-immediate="false"
-    class="flex justify-start flex-wrap overflow-auto infinite-height"
-  >
-    <WatchableGrid
-      v-if="watchables.items?.length"
-      v-for="watchable in watchables.items"
-      :key="watchable.id"
-      :watchable="watchable"
-    />
+  <div class="flex">
+    <div class="w-fit">
+      <FiltersWatchable @filter-change="captureFilters" />
+    </div>
+    <div
+      v-infinite-scroll="load"
+      infinite-scroll-immediate="false"
+      class="flex justify-start flex-wrap overflow-auto infinite-height"
+    >
+      <WatchableGrid
+        v-if="watchables.items?.length"
+        v-for="watchable in watchables.items"
+        :key="watchable.id"
+        :watchable="watchable"
+      />
+    </div>
   </div>
 </template>
 
@@ -66,6 +71,36 @@ const load = async () => {
     }
   }
 }
+
+const captureFilters = (filters: object) => {
+
+    const preFilter = filters.value? filters.value + '&' : ''
+    const filterValue =  preFilter + Object.entries(filters)
+        .map(([key, value]) => {
+          if (value === undefined || value === null || value === '') return undefined
+          return key === 'genres.id' ? `${key}:in:${value}` : `${key}:${value}`
+        })
+        .join('&')
+    if (filterValue !== '') {
+      filter.value = filterValue
+    } else {
+      filter.value = props.filter_base ? `type:eq:${props.filter_base}` : undefined
+    }
+  /*} else {
+    filter.value = props.filter_base ? `type:eq:${props.filter_base}` : undefined
+  }*/
+}
+
+watch(() => filter.value, async (newValue) => {
+  const response = await APIHandler.get(
+      `watchable?page=${page.value}&size=${size.value}&sort=${sort.value}${
+          filter.value ? `&filter=${filter.value}` : ''
+      }`)
+
+  if (response) {
+    watchables.value = response
+  }
+})
 
 watch(
   () => route.fullPath,

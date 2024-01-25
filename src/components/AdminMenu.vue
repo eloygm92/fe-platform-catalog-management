@@ -18,7 +18,7 @@ const props = defineProps({
 })
 const defaultActive = ref<string>(props.defaultItem)
 
-const menu = ref<object[]>([
+const menu = ref<{index: string, title: string, keyTable: string}[]>([
   {
     index: '1',
     title: 'Películas',
