@@ -50,6 +50,11 @@ const router = createRouter({
       path: '/admin',
       name: 'adminPage',
       component: () => import('../views/AdminPage.vue')
+    },
+    {
+      path: '/profile',
+      name: 'profilePage',
+      component: () => import('../views/ProfileView.vue')
     }
   ]
 })
@@ -59,6 +64,7 @@ const router = createRouter({
 const { cookies } = useCookies()
 
 router.beforeEach(async (to, from, next) => {
+  if (import.meta.env.VITE_DEVELOPMENT_STATUS) router.push({ name: 'loginPage' })
   const userStore = useUserStore()
   let isAuthenticated = cookies.get('access_token')
   const refreshToken = cookies.get('refresh_token')
@@ -69,8 +75,6 @@ router.beforeEach(async (to, from, next) => {
     } else {
       userStore.setUser(undefined)
     }
-  } else {
-    to.name === 'loginPage' ? next({ name: 'home' }) : next()
   }
 
   if (to.name === 'adminPage') {
@@ -81,6 +85,8 @@ router.beforeEach(async (to, from, next) => {
       next({ name: from.name })
     }
     next()
+  } else if (to.name === 'loginPage' && isAuthenticated) {
+    next({ name: 'home' })
   } else next()
 })
 
