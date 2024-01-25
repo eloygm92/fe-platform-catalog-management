@@ -1,0 +1,48 @@
+<template>
+  <AdminMenu
+    v-if="dataTypeSend"
+    :default-item="defaultIndex"
+    @update-vision="handleChange"
+    class="w-32 float-left fixed left-0 h-screen"
+  />
+  <AdminTable v-if="!loading" :data-type="dataTypeSend" />
+  <div v-else v-loading.fullscreen.lock="loading" />
+</template>
+
+<script setup lang="ts">
+import { onBeforeMount, ref } from 'vue'
+import AdminMenu from '@/components/AdminMenu.vue'
+import AdminTable from '@/components/AdminTable.vue'
+import { useAdminTableStore } from '@/stores/admintable'
+
+const dataTypeSend = ref<string>(undefined)
+const loading = ref<boolean>(false)
+const defaultIndex = ref<string>(undefined)
+const adminTableStore = useAdminTableStore()
+const handleChange = (dataType: object) => {
+  loading.value = true
+  dataTypeSend.value = dataType.keyTable
+  adminTableStore.setDataTypes(dataType.keyTable)
+  adminTableStore.setIndexType(dataType.index)
+
+  setTimeout(() => {
+    loading.value = false
+  }, 2000)
+}
+
+onBeforeMount(() => {
+  if (adminTableStore.dataTypes) {
+    dataTypeSend.value = adminTableStore.dataTypes
+    defaultIndex.value = adminTableStore.indexType
+  } else {
+    dataTypeSend.value = 'watchable/movies'
+    defaultIndex.value = '1'
+  }
+})
+
+/*watch(() => dataTypeSend.value, () => {
+  ElLoading.service({fullscreen: true})
+})*/
+</script>
+
+<style scoped></style>

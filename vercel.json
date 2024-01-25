@@ -1,0 +1,4 @@
+{
+  "rewrites": [
+    {"source": "http://fe-platform-catalog-management.vercel.app/:path", "destination": "https://be-platform-catalog-management.onrender.com/:path"}]
+}
