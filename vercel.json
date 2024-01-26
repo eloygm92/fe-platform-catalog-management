@@ -1,4 +1,0 @@
-{
-  "rewrites": [
-    {"source": "/api/:path*", "destination": "https://be-platform-catalog-management.onrender.com/:path*"}]
-}
