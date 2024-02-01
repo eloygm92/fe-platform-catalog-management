@@ -1,10 +1,35 @@
 <template>
+  <div>
+  <el-card class="mb-2">
+    <el-collapse>
+      <el-collapse-item title="Ordenar" name="1">
+        <div class="font-bold">Ordenar resultados por</div>
+        <el-select v-model="sort" placeholder="ordenar por" class="w-48" @change="changeSort">
+          <el-option
+            v-for="item in sortOptions"
+            :key="item.value"
+            :label="item.label"
+            :value="item.value"
+          />
+        </el-select>
+      </el-collapse-item>
+    </el-collapse>
+  </el-card>
   <el-card>
     <el-collapse>
       <el-collapse-item title="Filtros" name="1" >
-        <div class="font-bold">Géneros</div>
-        <el-check-tag v-for="item in genresList" :key="item.id" :checked="item.checked" class="m-1" @change="enableCheck(item.id)" > {{ item.name }} </el-check-tag>
+        <div class="font-bold">Palabra clave</div>
+        <el-input v-model="keyword" placeholder="Filtrar por palabra clave" />
         <el-divider />
+<!--        <div class="font-bold">Proveedores</div>-->
+        <el-collapse-item title="Proveedores" name="2">
+          <el-link v-for="item in providersList" :key="item.id" @click="enableCheckProvider(item.id)" class="m-1" ><img :src="calculateProviderImage(item.logo_path)" class="rounded opacity-75" :id="'provider-tag-' + item.id"></el-link>
+        </el-collapse-item>
+<!--        <div class="font-bold">Géneros</div>-->
+        <el-collapse-item title="Géneros" name="3">
+          <el-check-tag v-for="item in genresList" :key="item.id" :checked="item.checked" class="m-1" @change="enableCheckGenres(item.id)" > {{ item.name }} </el-check-tag>
+        </el-collapse-item>
+<!--        <el-divider />-->
         <div class="font-bold">Fecha de estreno</div>
         <el-checkbox label="¿Búsqueda por fecha de estreno?" :checked="checkAirDate" @change="enableAirDate"/>
         <div v-if="checkAirDate">
@@ -28,13 +53,16 @@
         </div>
         <el-divider />
         <div class="font-bold">Puntuación de los usuarios </div>
-        <el-slider v-model="voteAverage" range :step="1" :max="10" :marks="voteAverageMarks"/>
+        <el-slider v-model="voteAverage" range :step="1" :max="10" :marks="voteAverageMarks" class="p-4"/>
         <el-divider />
         <div class="font-bold">Votos mínimos </div>
-        <el-slider v-model="voteCount" :step="50" :max="500" :marks="voteCountMarks"/>
+        <el-slider v-model="voteCount" :step="50" :max="500" :marks="voteCountMarks" class="p-4"/>
+        <el-divider />
+        <el-button type="primary" @click="emitChanges" size="large" class="w-full">Aplicar filtros</el-button>
       </el-collapse-item>
     </el-collapse>
   </el-card>
+  </div>
 </template>
 
 <script setup lang="ts">
@@ -52,11 +80,14 @@ type Marks = Record<number, Mark | string>
 const emit = defineEmits(['filterChange'])
 
 const genresList = ref<object[]>([])
+const providersList = ref<object[]>([])
 const checkAirDate = ref<boolean>(false)
 const fromAirDate = ref<string | undefined>(undefined)
 const toAirDate = ref<string | undefined>(undefined)
 const voteAverage = ref<number[]>([0, 10]) // TODO: between
 const voteCount = ref<number[]>([0, 10]) // TODO: gtl
+const keyword = ref<string | undefined>(undefined)
+const sort = ref<string>('popularity:desc')
 const voteAverageMarks = reactive<Marks>({
   0: '0',
   2: '2',
@@ -73,6 +104,18 @@ const voteCountMarks = reactive<Marks>({
   400: '400',
   500: '500'
 })
+const sortOptions = reactive([
+  { value: 'popularity:desc', label: 'Popularidad descendente' },
+  { value: 'popularity:asc', label: 'Popularidad ascendente' },
+  { value: 'release_date:desc', label: 'Fecha de estreno descendente' },
+  { value: 'release_date:asc', label: 'Fecha de estreno ascendente' },
+  { value: 'vote_average:desc', label: 'Puntuación media descendente' },
+  { value: 'vote_average:asc', label: 'Puntuación media ascendente' },
+  { value: 'vote_count:desc', label: 'Número de votos descendente' },
+  { value: 'vote_count:asc', label: 'Número de votos ascendente' },
+  { value: 'name:asc', label: 'Título ascendente' },
+  { value: 'name:desc', label: 'Título descendente' }
+])
 
 onBeforeMount(async () => {
   const response = await APIHandler.get(`watchable/genre`)
@@ -81,12 +124,35 @@ onBeforeMount(async () => {
       return {checked: false, ...item}
     })
   }
+
+  const providers = await APIHandler.get(`provider`)
+  if (providers) {
+    providersList.value = providers.map(provider => {
+      return {checked: false, ...provider}
+    })
+  }
 })
 
-const enableCheck = (id: number) => {
+const enableCheckGenres = (id: number) => {
   genresList.value = genresList.value.map(item => {
     if (item.id === id) {
       item.checked = !item.checked
+    }
+    return item
+  })
+}
+
+const enableCheckProvider = (id: number) => {
+  providersList.value = providersList.value.map(item => {
+    if (item.id === id) {
+      item.checked = !item.checked
+    }
+    if (item.checked) {
+      document.getElementById('provider-tag-' + item.id)?.classList.add('border','border-blue-500')
+      document.getElementById('provider-tag-' + item.id)?.classList.remove('opacity-75')
+    } else {
+      document.getElementById('provider-tag-' + item.id)?.classList.remove('border','border-blue-500', 'opacity-75')
+      document.getElementById('provider-tag-' + item.id)?.classList.add('opacity-75')
     }
     return item
   })
@@ -107,7 +173,25 @@ const calculateAirDate = () => {
     emit('filterChange', {'release_date': undefined})
 }
 
-watch(() => genresList.value, (newValue) => {
+const calculateProviderImage = (url: string) => {
+  return import.meta.env.VITE_IMG_CDN + 'w45' + url
+}
+
+const changeSort = (newSort: string) => {
+  sort.value = newSort;
+}
+
+watch(() => sort.value, (newValue) => {
+  emit('filterChange', {'sort': newValue})
+})
+
+const emitChanges = () => {
+  const genresIds = genresList.value.filter(item => item.checked).map(item => item.id)
+  const providersIds = providersList.value.filter(item => item.checked).map(item => item.id)
+  emit('filterChange', {'keyword': keyword.value, 'sort': sort.value, 'vote_average': voteAverage.value, 'vote_count': voteCount.value, 'provider.id': providersIds, 'genres.id': genresIds})
+}
+
+/*watch(() => genresList.value, (newValue) => {
   const filter = newValue.filter(item => item.checked).map(item => item.id)
   if(filter.length > 0)
     emit('filterChange', {'genres.id': filter})
@@ -128,7 +212,7 @@ watch(() => fromAirDate.value, (newValue) => {
 
 watch(() => toAirDate.value, (newValue) => {
   calculateAirDate()
-})
+})*/
 
 </script>
 

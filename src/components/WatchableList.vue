@@ -22,6 +22,7 @@
 import { onBeforeMount, ref, watch } from 'vue'
 import * as APIHandler from '@/lib/APIHandler'
 import WatchableGrid from '@/components/WatchableGrid.vue'
+import FiltersWatchable from '@/components/FiltersWatchable.vue'
 import { useRoute, useRouter } from 'vue-router'
 
 const props = defineProps({
@@ -36,7 +37,7 @@ const router = useRouter()
 
 const sort = ref<string>('popularity:desc')
 const page = ref<number>(1)
-const size = ref<number>(25)
+const size = ref<number>(24)
 const filter = ref<string>(props.filter_base ? `type:eq:${props.filter_base}` : undefined)
 const watchables = ref<{ items: object[]; totalItems: number; page: number; size: number }>({
   items: [],
