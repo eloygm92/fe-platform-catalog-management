@@ -84,8 +84,8 @@ const providersList = ref<object[]>([])
 const checkAirDate = ref<boolean>(false)
 const fromAirDate = ref<string | undefined>(undefined)
 const toAirDate = ref<string | undefined>(undefined)
-const voteAverage = ref<number[]>([0, 10]) // TODO: between
-const voteCount = ref<number[]>([0, 10]) // TODO: gtl
+const voteAverage = ref<number[] | undefined>(undefined)
+const voteCount = ref<number | undefined>(undefined)
 const keyword = ref<string | undefined>(undefined)
 const sort = ref<string>('popularity:desc')
 const voteAverageMarks = reactive<Marks>({
@@ -164,13 +164,13 @@ const enableAirDate = () => {
 
 const calculateAirDate = () => {
   if(fromAirDate.value && toAirDate.value)
-    emit('filterChange', {'release_date': `between:${fromAirDate.value},${toAirDate.value}`})
+    return {'release_date': `between:${fromAirDate.value},${toAirDate.value}`}
   else if (fromAirDate.value && !toAirDate.value)
-    emit('filterChange', {'release_date': `gte:${fromAirDate.value}`})
+    return {'release_date': `gte:${fromAirDate.value}`}
   else if (!fromAirDate.value && toAirDate.value)
-    emit('filterChange', {'release_date': `lte:${toAirDate.value}`})
+    return {'release_date': `lte:${toAirDate.value}`}
   else
-    emit('filterChange', {'release_date': undefined})
+    return {'release_date': undefined}
 }
 
 const calculateProviderImage = (url: string) => {
@@ -188,7 +188,7 @@ watch(() => sort.value, (newValue) => {
 const emitChanges = () => {
   const genresIds = genresList.value.filter(item => item.checked).map(item => item.id)
   const providersIds = providersList.value.filter(item => item.checked).map(item => item.id)
-  emit('filterChange', {'keyword': keyword.value, 'sort': sort.value, 'vote_average': voteAverage.value, 'vote_count': voteCount.value, 'provider.id': providersIds, 'genres.id': genresIds})
+  emit('filterChange', {'sort': sort.value, filter: {'keyword': keyword.value ? keyword.value?.replaceAll(' ', ',') : keyword.value, 'vote_average': 'between:' + voteAverage.value, 'vote_count': 'gte:' + voteCount.value, 'provider.id': 'in:' + providersIds, 'genres.id': 'in:' + genresIds, ...calculateAirDate() }})
 }
 
 /*watch(() => genresList.value, (newValue) => {

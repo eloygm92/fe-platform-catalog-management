@@ -61,11 +61,7 @@ const load = async () => {
   if (watchables.value.totalItems > watchables.value.items.length) {
     //if (page.value < 3) {
     page.value++
-    const response = await APIHandler.get(
-      `watchable?page=${page.value}&size=${size.value}&sort=${sort.value}${
-        filter.value ? `&filter=${filter.value}` : ''
-      }`
-    )
+    const response = await getData();
     if (response) {
       watchables.value.items = [...watchables.value.items, ...response.items]
       watchables.value.size = watchables.value.size + response.size
@@ -73,15 +69,40 @@ const load = async () => {
   }
 }
 
-const captureFilters = (filters: object) => {
+const getData = async () => {
+  return await APIHandler.get(
+      `watchable?page=${page.value}&size=${size.value}&sort=${sort.value}${
+          filter.value ? `&filter=${filter.value}` : ''
+      }`
+  )
+}
 
-    const preFilter = filters.value? filters.value + '&' : ''
-    const filterValue =  preFilter + Object.entries(filters)
-        .map(([key, value]) => {
-          if (value === undefined || value === null || value === '') return undefined
-          return key === 'genres.id' ? `${key}:in:${value}` : `${key}:${value}`
-        })
-        .join('&')
+const captureFilters = (filters: object) => {
+    sort.value = filters.sort
+    let filterValue = '';
+    if (filters.filter) {
+      const preFilter = filters.value ? filters.value + '&' : ''
+      filterValue = preFilter + Object.entries(filters.filter)
+          .filter(([key, value]) => {
+            console.log(key, value)
+            if (!value)
+              return false
+
+            const dataSplitted = value.split(':')
+            if (typeof dataSplitted[1] === 'object')
+              return dataSplitted[1].length !== 0
+            return dataSplitted[1] !== 'undefined' && dataSplitted[1] !== ''
+          })
+          .map(([key, value]) => {
+            if (key === 'keyword') {
+              const keywordSplitted = value.split(',')
+              return keywordSplitted.map(keyword => `name:like:${keyword}`).join('&filter=')
+            }
+            return key === 'genres.id' || key === 'provider.id' ? `${key}:in:${value}` : `${key}:${value}`
+          })
+          .join('&filter=')
+    }
+
     if (filterValue !== '') {
       filter.value = filterValue
     } else {
@@ -93,10 +114,15 @@ const captureFilters = (filters: object) => {
 }
 
 watch(() => filter.value, async (newValue) => {
-  const response = await APIHandler.get(
-      `watchable?page=${page.value}&size=${size.value}&sort=${sort.value}${
-          filter.value ? `&filter=${filter.value}` : ''
-      }`)
+  const response = await getData();
+
+  if (response) {
+    watchables.value = response
+  }
+})
+
+watch(() => sort.value, async (newValue) => {
+  const response = await getData();
 
   if (response) {
     watchables.value = response
