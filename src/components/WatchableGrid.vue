@@ -1,8 +1,8 @@
 <template>
   <a @click="handleClick" class="cursor-pointer h-auto">
     <el-card :body-style="{ padding: '0px', width: '185px'/*'background-image': `url(${image_url})`, width: '185px', height: '276px'*/ }">
-      <IconBookmark class="z-40 watchlist-button absolute" />
-      <img :src="image_url" class="w-full image z-10" loading="lazy" :alt="'Poster de ' + watchableData.name" />
+      <IconBookmark class="z-40 watchlist-button relative" />
+      <img :src="image_url" class="w-full image z-10 relative" loading="lazy" :alt="'Poster de ' + watchableData.name" />
       <PopularsCircleBar :percentage="watchableData.vote_average" class="ml-1.5 rebase-image z-40 relative"/>
       <div class="grid title-zone">
         <span class="grid-rows-1 font-bold my-auto">{{ watchableData.name ?? watchableData.original_name }}</span>
@@ -53,6 +53,7 @@ const handleClick = () => {
 
 <style scoped>
 .image {
+  margin-top: -1.4rem;
   width: 185px;
   height: 276px;
 }

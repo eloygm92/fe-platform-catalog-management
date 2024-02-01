@@ -40,6 +40,6 @@ const calculateColor = (percentage: number) => {
 }
 .circle-rounded {
   border-radius: 50%;
-  height: 2.10rem;
+  height: 2.15rem;
 }
 </style>
