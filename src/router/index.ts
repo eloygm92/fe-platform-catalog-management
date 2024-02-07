@@ -67,7 +67,8 @@ router.beforeEach(async (to, from, next) => {
   const userStore = useUserStore()
   let isAuthenticated = cookies.get('access_token')
   const refreshToken = cookies.get('refresh_token')
-  if (import.meta.env.VITE_DEVELOPMENT_STATUS && to.name !== 'loginPage' && !isAuthenticated && !refreshToken)
+  const developmentStatus = import.meta.env.VITE_DEVELOPMENT_STATUS !== 'false'
+  if (developmentStatus && to.name !== 'loginPage' && !isAuthenticated && !refreshToken)
     next({ name: 'loginPage' })
 
   if (!isAuthenticated) {
@@ -83,8 +84,8 @@ router.beforeEach(async (to, from, next) => {
     if (!isAuthenticated) {
       next({ name: 'loginPage' })
     }
-    if (userStore.user.role !== 'admin') {
-      next({ name: from.name })
+    if (userStore.user?.role !== 'admin') {
+      next({ name: from.name?.toString() })
     }
     next()
   } else if (to.name === 'loginPage' && isAuthenticated) {

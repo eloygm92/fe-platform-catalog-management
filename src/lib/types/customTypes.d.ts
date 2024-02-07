@@ -19,6 +19,7 @@ export declare type IUser = {
   username: string
   email: string
   password?: string
+  role?: string
   /*refresh_token: string
   created_at: string
   updated_at: string

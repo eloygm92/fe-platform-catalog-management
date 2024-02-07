@@ -5,9 +5,9 @@ import type { IUser } from '@/lib/types/customTypes'
 export const useUserStore = defineStore(
   'user',
   () => {
-    const user = ref<IUser>({})
+    const user = ref<undefined | IUser>(undefined)
 
-    function setUser(newUser: IUser) {
+    function setUser(newUser: IUser | undefined) {
       user.value = newUser
     }
 
