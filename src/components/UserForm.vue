@@ -73,6 +73,8 @@ import type { FormInstance } from 'element-plus'
 import * as APIHandler from '@/lib/APIHandler'
 import ButtonsForm from '@/components/ButtonsForm.vue'
 import { useUserStore } from '@/stores/user'
+import { ElMessage } from 'element-plus'
+import type { IRole } from '@/lib/types/customTypes'
 
 const userStore = useUserStore()
 
@@ -86,10 +88,11 @@ const props = defineProps({
 })
 
 interface RuleForm {
+  id?: number| string
   username: string | undefined
   password: string | undefined
   email: string | undefined
-  role: string | undefined
+  role: string | undefined | IRole
   created_at: string | undefined
   updated_at: string | undefined
   deactivate_at: string | undefined
@@ -101,6 +104,7 @@ interface RuleForm {
 const form = ref<FormInstance>()
 const loader = ref<boolean>(true)
 const formData = reactive<RuleForm>({
+  id: undefined,
   username: undefined,
   password: undefined,
   email: undefined,
@@ -111,12 +115,23 @@ const formData = reactive<RuleForm>({
   newImage: undefined,
   avatar: undefined*/
 })
-const optionRoles = ref<object[]>([])
-const originalData = ref<object>(undefined)
+const optionRoles = ref<IRole[]>([])
+const originalData = ref<Record<string, number | string | undefined | IRole>>({
+  id: undefined,
+  username: undefined,
+  password: undefined,
+  email: undefined,
+  created_at: undefined,
+  updated_at: undefined,
+  deactivate_at: undefined,
+  role: undefined/*,
+  newImage: undefined,
+  avatar: undefined*/
+})
 
 onBeforeMount(async () => {
   if (props.editData) {
-    const data = await APIHandler.get('user/' + props.editData)
+    const data: any = await APIHandler.get('user/' + props.editData)
     if (data) {
       originalData.value = Object.assign({}, data)
       formData.username = data.username
@@ -139,7 +154,7 @@ const resetForm = (formEl: FormInstance | undefined) => {
   formEl.resetFields()
 }
 
-const previewChanges = () => {
+/*const previewChanges = () => {
   const file = formData.avatar
   console.log(formData)
   if (file) {
@@ -147,17 +162,18 @@ const previewChanges = () => {
     formData.newImage = URL.createObjectURL(createBlob);
     console.log(formData.newImage)
   }
-}
+}*/
 
 const sendChanges = async () => {
   if (props.editData) {
-    const dataToSend = {}
-    for (const key in formData) {
-      if (key !== 'role' && formData[key] !== originalData.value[key]) {
-        dataToSend[key] = formData[key]
+    const dataToSend: Record<string,number | string | undefined | IRole> = {}
+    const formDataCopy: Record<string,number | string | undefined | IRole> = Object.assign({}, formData)
+    for (const key in formDataCopy) {
+      if (key !== 'role' && formDataCopy[key] !== originalData.value[key]) {
+        dataToSend[key] = formDataCopy[key]
       } else if (key === 'role') {
-        const roleFound = optionRoles.value.find((item) => item.id === formData[key])
-        if (roleFound && roleFound.id !== originalData.value[key].id) {
+        const roleFound = optionRoles.value.find((item) => item.id === formDataCopy[key])
+        if (roleFound &&  roleFound.id != originalData.value[key]?.id) {
           dataToSend[key] = roleFound
         }
       }
@@ -177,7 +193,7 @@ const sendChanges = async () => {
     const response = await APIHandler.post('auth/signup', formData)
     if (response.status === 201) {
       ElMessage.success('Usuario creado correctamente')
-      const responseData = response.json()
+      const responseData = await response.json()
       userStore.setUser(responseData)
       emit('created')
     } else {

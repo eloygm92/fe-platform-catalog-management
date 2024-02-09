@@ -1,6 +1,6 @@
 <template>
   <AdminMenu
-    v-if="dataTypeSend"
+    v-if="dataTypeSend !== ''"
     :default-item="defaultIndex"
     @update-vision="handleChange"
     class="w-32 float-left fixed left-0 h-screen"
@@ -15,11 +15,11 @@ import AdminMenu from '@/components/AdminMenu.vue'
 import AdminTable from '@/components/AdminTable.vue'
 import { useAdminTableStore } from '@/stores/admintable'
 
-const dataTypeSend = ref<string>(undefined)
+const dataTypeSend = ref<string>('')
 const loading = ref<boolean>(false)
-const defaultIndex = ref<string>(undefined)
+const defaultIndex = ref<string>('')
 const adminTableStore = useAdminTableStore()
-const handleChange = (dataType: object) => {
+const handleChange = (dataType: {index: string, title: string, keyTable: string}) => {
   loading.value = true
   dataTypeSend.value = dataType.keyTable
   adminTableStore.setDataTypes(dataType.keyTable)
@@ -31,7 +31,7 @@ const handleChange = (dataType: object) => {
 }
 
 onBeforeMount(() => {
-  if (adminTableStore.dataTypes) {
+  if (adminTableStore.dataTypes !== '') {
     dataTypeSend.value = adminTableStore.dataTypes
     defaultIndex.value = adminTableStore.indexType
   } else {

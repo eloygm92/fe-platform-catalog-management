@@ -13,7 +13,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue'
+import { type PropType, ref } from 'vue'
 import type { IWatchable } from '@/lib/types/customTypes'
 import type { RouteParams } from 'vue-router'
 import { useRouter } from 'vue-router'
@@ -26,7 +26,7 @@ const store = useContentStore()
 
 const props = defineProps({
   watchable: {
-    type: Object<IWatchable>,
+    type: Object as PropType<IWatchable>,
     required: true
   }
 })
@@ -39,10 +39,10 @@ const image_url = ref<string>(
     : import.meta.env.VITE_404_IMG
 )
 //const toParams = ref<RouteParams>({ path: '/watchable/'+ props.watchable.id, component: WatchableDetail, watchable: props.watchable })
-const toParams = ref<RouteParams>({
+const toParams = ref({
   name: 'watchableDetail',
-  props: { watchable: watchableData },
-  params: { id: props.watchable.id }
+  /*props: { watchable: watchableData },*/
+  params: { id: String(props.watchable.id) }
 })
 
 const handleClick = () => {

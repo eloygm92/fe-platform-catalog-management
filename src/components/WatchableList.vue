@@ -4,12 +4,12 @@
       <FiltersWatchable @filter-change="captureFilters" />
     </div>
     <div
+      v-if="watchables.items?.length"
       v-infinite-scroll="load"
       infinite-scroll-immediate="false"
       class="flex justify-start flex-wrap overflow-auto infinite-height"
     >
       <WatchableGrid
-        v-if="watchables.items?.length"
         v-for="watchable in watchables.items"
         :key="watchable.id"
         :watchable="watchable"
@@ -24,6 +24,7 @@ import * as APIHandler from '@/lib/APIHandler'
 import WatchableGrid from '@/components/WatchableGrid.vue'
 import FiltersWatchable from '@/components/FiltersWatchable.vue'
 import { useRoute, useRouter } from 'vue-router'
+import type { IFilters, IWatchable } from '@/lib/types/customTypes'
 
 const props = defineProps({
   filter_base: {
@@ -38,8 +39,8 @@ const router = useRouter()
 const sort = ref<string>('popularity:desc')
 const page = ref<number>(1)
 const size = ref<number>(24)
-const filter = ref<string>(props.filter_base ? `type:eq:${props.filter_base}` : undefined)
-const watchables = ref<{ items: object[]; totalItems: number; page: number; size: number }>({
+const filter = ref<string | undefined>(props.filter_base ? `type:eq:${props.filter_base}` : undefined)
+const watchables = ref<{ items: IWatchable[]; totalItems: number; page: number; size: number }>({
   items: [],
   totalItems: 0,
   page: 0,
@@ -77,18 +78,18 @@ const getData = async () => {
   )
 }
 
-const captureFilters = (filters: object) => {
+const captureFilters = (filters: IFilters) => {
     sort.value = filters.sort
     let filterValue = '';
     if (filters.filter) {
-      const preFilter = filters.value ? filters.value + '&' : ''
+      const preFilter = filter.value ? filter.value + '&' : ''
       filterValue = preFilter + Object.entries(filters.filter)
           .filter(([key, value]) => {
             console.log(key, value)
             if (!value)
               return false
 
-            const dataSplitted = value.split(':')
+            const dataSplitted: any[] = value.split(':')
             if (typeof dataSplitted[1] === 'object')
               return dataSplitted[1].length !== 0
             return dataSplitted[1] !== 'undefined' && dataSplitted[1] !== ''

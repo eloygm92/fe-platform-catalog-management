@@ -4,8 +4,8 @@ import { ref } from 'vue'
 export const useAdminTableStore = defineStore(
   'adminTable',
   () => {
-    const dataTypes = ref<string>(undefined)
-    const indexType = ref<string>(undefined)
+    const dataTypes = ref<string>('')
+    const indexType = ref<string>('')
 
     function setDataTypes(newDataTypes: string) {
       dataTypes.value = newDataTypes

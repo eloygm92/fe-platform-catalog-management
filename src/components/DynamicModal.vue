@@ -21,7 +21,7 @@ import ModalForms from '@/components/ModalForms.vue'
 import WatchableForm from '@/components/WatchableForm.vue'
 import UserForm from '@/components/UserForm.vue'
 
-const emit = defineEmits(['visible'])
+const emit = defineEmits(['visible', 'reload'])
 
 const props = defineProps({
   componentUse: {
@@ -53,7 +53,7 @@ const component = shallowRef(selectComponent(props.componentUse))
 const edit_data = ref<string>(String(props.idReference))
 const reloadComponent = ref<number>(0)
 
-const updateVisible = (value) => {
+const updateVisible = (value: boolean) => {
   dialogVisible.value = value
   emit('visible', value)
 }

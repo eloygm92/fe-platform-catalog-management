@@ -23,7 +23,7 @@
         <el-divider />
 <!--        <div class="font-bold">Proveedores</div>-->
         <el-collapse-item title="Proveedores" name="2">
-          <el-link v-for="item in providersList" :key="item.id" @click="enableCheckProvider(item.id)" class="m-1" ><img :src="calculateProviderImage(item.logo_path)" class="rounded opacity-75" :id="'provider-tag-' + item.id"></el-link>
+          <el-link v-for="item in providersList" :key="item.id" @click="enableCheckProvider(item.id)" class="m-1" ><img :src="calculateProviderImage(item.logo_path)" class="rounded opacity-75" :id="'provider-tag-' + item.id" :alt="'Logo de ' + item.name"></el-link>
         </el-collapse-item>
 <!--        <div class="font-bold">Géneros</div>-->
         <el-collapse-item title="Géneros" name="3">
@@ -69,6 +69,7 @@
 
 import {type CSSProperties, onBeforeMount, reactive, ref, watch} from "vue";
 import * as APIHandler from "@/lib/APIHandler";
+import type { IGenre, IProvider } from '@/lib/types/customTypes'
 
 interface Mark {
   style: CSSProperties
@@ -79,8 +80,8 @@ type Marks = Record<number, Mark | string>
 
 const emit = defineEmits(['filterChange'])
 
-const genresList = ref<object[]>([])
-const providersList = ref<object[]>([])
+const genresList = ref<IGenre[]>([])
+const providersList = ref<IProvider[]>([])
 const checkAirDate = ref<boolean>(false)
 const fromAirDate = ref<string | undefined>(undefined)
 const toAirDate = ref<string | undefined>(undefined)
@@ -120,14 +121,14 @@ const sortOptions = reactive([
 onBeforeMount(async () => {
   const response = await APIHandler.get(`watchable/genre`)
   if (response) {
-    genresList.value = response.map(item => {
+    genresList.value = response.map((item: IGenre) => {
       return {checked: false, ...item}
     })
   }
 
   const providers = await APIHandler.get(`provider`)
   if (providers) {
-    providersList.value = providers.map(provider => {
+    providersList.value = providers.map((provider: IProvider) => {
       return {checked: false, ...provider}
     })
   }

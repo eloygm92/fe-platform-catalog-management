@@ -53,9 +53,9 @@
                 </el-tag>
               </div>-->
             </el-option>
-            <template #tag>
+<!--            <template #tag>
               <el-tag v-for="color in value" :key="color.value" />
-            </template>
+            </template>-->
           </el-select>
         </el-form-item>
       </el-col>
@@ -157,6 +157,8 @@ import * as APIHandler from '@/lib/APIHandler'
 import { type FormInstance } from 'element-plus'
 import compare_elements from '@/lib/compare_elements'
 import ButtonsForm from '@/components/ButtonsForm.vue'
+import type { IGenre, IProvider } from '@/lib/types/customTypes'
+import { ElMessage } from 'element-plus'
 
 const emit = defineEmits(['update:dialogVisible', 'reload'])
 
@@ -206,9 +208,9 @@ const formData = reactive<RuleForm>({
   genres: undefined,
   providers: undefined
 })
-const optionsProvider = ref<object[]>([])
-const optionsGenres = ref<object[]>([])
-const originalData = ref<object>(undefined)
+const optionsProvider = ref<IProvider[]>([])
+const optionsGenres = ref<IGenre[]>([])
+const originalData = ref<RuleForm>()
 
 onBeforeMount(async () => {
   if (props.editData) {
@@ -229,8 +231,8 @@ onBeforeMount(async () => {
       formData.updated_at = data.updated_at
       formData.deactivate_at = data.deactivate_at
       formData.control = data.control
-      formData.genres = data?.genres.map((item) => item.id) ?? []
-      formData.providers = data?.provider.map((item) => item.id) ?? []
+      formData.genres = data?.genres.map((item: IGenre) => item.id) ?? []
+      formData.providers = data?.provider.map((item: IGenre) => item.id) ?? []
     }
 
     const response = await APIHandler.get('provider')
@@ -264,7 +266,7 @@ const sendChanges = async () => {
       }
     } else if (key === 'providers' && formData[key]?.length > 0) {
       const providersUsed = optionsProvider.value.filter(
-        (item) => formData.providers?.includes(item.id)
+        (item: IProvider) => formData.providers?.includes(String(item.id))
       )
       if (!compare_elements(providersUsed, originalData.value[key])) {
         dataToSend[key] = providersUsed

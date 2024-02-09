@@ -38,7 +38,7 @@
           </div>
         </template>
       </el-table-column>
-      <el-table-column fixed="right" width="100">
+      <el-table-column fixed="right" width="140">
         <template #header>
           <span class="header-column flex justify-center">Acciones</span>
         </template>
@@ -77,6 +77,20 @@
               <IconRestore />
             </el-button>
           </el-tooltip>
+          <el-tooltip
+            v-if="scope['row']['type'] === 'movie' || scope['row']['type'] === 'tv'"
+            content="Forzar extracción"
+            placement="top"
+          >
+            <el-button
+              link
+              type="primary"
+              size="small"
+              @click.prevent="extractElem(scope['row']['id'], scope['row']['type'])"
+            >
+              <IconReload />
+            </el-button>
+          </el-tooltip>
         </template>
       </el-table-column>
     </el-table>
@@ -107,10 +121,13 @@
 <script setup lang="ts">
 import { onBeforeMount, ref, watch } from 'vue'
 import * as APIHandler from '@/lib/APIHandler'
+import { ElMessage } from 'element-plus'
 import IconEdit from '@/components/icons/IconEdit.vue'
 import IconDelete from '@/components/icons/IconDelete.vue'
 import IconRestore from '@/components/icons/IconRestore.vue'
 import DynamicModal from '@/components/DynamicModal.vue'
+import IconReload from '@/components/icons/IconReload.vue'
+import type { IMapper, IVisualMap } from '@/lib/types/customTypes'
 
 const props = defineProps({
   dataType: {
@@ -123,11 +140,11 @@ const data = ref<object[]>([])
 const totalPages = ref<number>(0)
 const currentPage = ref<number>(1)
 const sizePage = ref<number>(10)
-const edit_id = ref<number | undefined>(undefined)
-const component_name = ref<string | undefined>(undefined)
+const edit_id = ref<number>(0)
+const component_name = ref<string>('')
 const render = ref<boolean>(false)
 
-const mapperData = ref({
+const mapperData = ref<Record<string,IVisualMap>>({
   id: {
     mapped: 'ID',
     visibility: true
@@ -164,6 +181,14 @@ const mapperData = ref({
   release_date: {
     mapped: 'Fecha de Lanzamiento',
     visibility: false
+  },
+  username: {
+    mapped: 'Nombre de Usuario',
+    visibility: true
+  },
+  email: {
+    mapped: 'Correo Electrónico',
+    visibility: true
   },
   created_at: {
     mapped: 'Fecha de Creación',
@@ -289,6 +314,11 @@ const editElem = (id: string) => {
   const splitProps = props.dataType.split('/')
   edit_id.value = Number(id)
   component_name.value = splitProps[0]
+}
+
+const extractElem = async (id: number, type: string) => {
+  await APIHandler.get('Synchro' + type.charAt(0).toUpperCase() + type.slice(1) + '/' + id)
+  ElMessage.success('Extracción realizada correctamente')
 }
 </script>
 

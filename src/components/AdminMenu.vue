@@ -37,8 +37,9 @@ const menu = ref<{index: string, title: string, keyTable: string}[]>([
 ])
 
 const handleSelect = (key: string) => {
-  const foundObject = menu.value.find((item) => item.index === key)
-  emits('update-vision', { keyTable: foundObject.keyTable, index: foundObject.index })
+  const foundObject: {index: string, title: string, keyTable: string} | undefined = menu.value.find((item) => item.index === key)
+  if(foundObject)
+    emits('update-vision', { keyTable: foundObject.keyTable, index: foundObject.index })
 }
 </script>
 

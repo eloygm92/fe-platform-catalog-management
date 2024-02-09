@@ -28,7 +28,7 @@
               id="username"
               placeholder="usuario"
               :class="inputClass"
-              required=""
+              required="false"
             />
           </div>
           <div>
@@ -46,7 +46,7 @@
               id="password"
               placeholder="••••••••"
               :class="inputClass"
-              required=""
+              required="false"
             />
           </div>
           <!--<div class="flex items-start">
@@ -115,8 +115,8 @@ const { cookies } = useCookies()
 const router = useRouter()
 const userStore = useUserStore()
 
-const password = ref<string>(undefined)
-const username = ref<string>(undefined)
+const password = ref<string | undefined>(undefined)
+const username = ref<string | undefined>(undefined)
 const error = ref<boolean>(false)
 const reload = ref<number>(0)
 const inputClass = ref<string>(
