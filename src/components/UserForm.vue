@@ -21,7 +21,7 @@
         </el-form-item>
       </el-col>
     </el-row>
-    <el-row v-if="props.editData" :gutter="24">
+    <el-row v-if="props.editData && userStore.user?.role === 'admin'" :gutter="24">
       <el-col :span="24">
         <el-form-item label="Rol" prop="role">
           <el-select v-model="formData.role" placeholder="Rol">
@@ -32,6 +32,22 @@
               :value="item.id"
             />
           </el-select>
+        </el-form-item>
+      </el-col>
+    </el-row>
+    <el-row :gutter="24">
+      <el-col :span="24">
+        <el-form-item label="Proveedores" prop="providers" v-model="formData.providers">
+          <el-tooltip
+            v-for="item in providersList"
+            :key="item.id"
+            :content="item.name"
+            placement="top"
+          >
+            <el-link @click="enableCheckProvider(item.id)" class="m-1" >
+              <img :src="calculateProviderImage(item.logo_path)" :class="item.checked ? 'border border-blue-500' : 'rounded opacity-75'" :id="'provider-tag-' + item.id" :alt="'Logo de ' + item.name">
+            </el-link>
+          </el-tooltip>
         </el-form-item>
       </el-col>
     </el-row>
@@ -74,7 +90,7 @@ import * as APIHandler from '@/lib/APIHandler'
 import ButtonsForm from '@/components/ButtonsForm.vue'
 import { useUserStore } from '@/stores/user'
 import { ElMessage } from 'element-plus'
-import type { IRole } from '@/lib/types/customTypes'
+import type { IProvider, IRole } from '@/lib/types/customTypes'
 
 const userStore = useUserStore()
 
@@ -96,11 +112,13 @@ interface RuleForm {
   created_at: string | undefined
   updated_at: string | undefined
   deactivate_at: string | undefined
+  providers: IProvider[]
 /*  newImage: string | undefined
   undefined: string | undefined*/
 }
 
 //const default_image = ref<string>(import.meta.env.VITE_CIRCLE_AVATAR_IMG)
+const providersList = ref<IProvider[]>([])
 const form = ref<FormInstance>()
 const loader = ref<boolean>(true)
 const formData = reactive<RuleForm>({
@@ -111,12 +129,13 @@ const formData = reactive<RuleForm>({
   created_at: undefined,
   updated_at: undefined,
   deactivate_at: undefined,
-  role: undefined/*,
+  role: undefined,
+  providers: []/*,
   newImage: undefined,
   avatar: undefined*/
 })
 const optionRoles = ref<IRole[]>([])
-const originalData = ref<Record<string, number | string | undefined | IRole>>({
+const originalData = ref<any>({
   id: undefined,
   username: undefined,
   password: undefined,
@@ -124,12 +143,43 @@ const originalData = ref<Record<string, number | string | undefined | IRole>>({
   created_at: undefined,
   updated_at: undefined,
   deactivate_at: undefined,
-  role: undefined/*,
+  role: undefined,
+  providers: []/*,
   newImage: undefined,
   avatar: undefined*/
 })
 
+const enableCheckProvider = (id: number | string) => {
+  providersList.value = providersList.value.map(item => {
+    if (item.id === id) {
+      item.checked = !item.checked
+    }
+    if (item.checked) {
+      document.getElementById('provider-tag-' + item.id)?.classList.add('border','border-blue-500')
+      document.getElementById('provider-tag-' + item.id)?.classList.remove('opacity-75')
+      formData.providers.push(item);
+    } else {
+      formData.providers = formData.providers.filter(elem => item.id !== elem.id)
+      document.getElementById('provider-tag-' + item.id)?.classList.remove('border','border-blue-500', 'opacity-75')
+      document.getElementById('provider-tag-' + item.id)?.classList.add('opacity-75')
+    }
+    return item
+  })
+}
+
+const calculateProviderImage = (url: string) => {
+  return import.meta.env.VITE_IMG_CDN + 'w45' + url
+}
+
 onBeforeMount(async () => {
+
+  const providers = await APIHandler.get(`provider`)
+  if (providers) {
+    providersList.value = providers.map((provider: IProvider) => {
+      return {checked: false, ...provider}
+    })
+  }
+
   if (props.editData) {
     const data: any = await APIHandler.get('user/' + props.editData)
     if (data) {
@@ -140,6 +190,12 @@ onBeforeMount(async () => {
       formData.created_at = data.created_at
       formData.updated_at = data.updated_at
       formData.deactivate_at = data.deactivate_at
+      //formData.providers = data.providers
+      if (data.providers.length > 0) {
+        for await (const provider of data.providers) {
+          enableCheckProvider(provider.id)
+        }
+      }
     }
   }
 
@@ -166,15 +222,24 @@ const resetForm = (formEl: FormInstance | undefined) => {
 
 const sendChanges = async () => {
   if (props.editData) {
-    const dataToSend: Record<string,number | string | undefined | IRole> = {}
-    const formDataCopy: Record<string,number | string | undefined | IRole> = Object.assign({}, formData)
+    const dataToSend: any = {}
+    const formDataCopy: any = Object.assign({}, formData)
     for (const key in formDataCopy) {
-      if (key !== 'role' && formDataCopy[key] !== originalData.value[key]) {
+      if (key !== 'role' && key !== 'providers' && formDataCopy[key] !== originalData.value[key]) {
         dataToSend[key] = formDataCopy[key]
       } else if (key === 'role') {
         const roleFound = optionRoles.value.find((item) => item.id === formDataCopy[key])
         if (roleFound &&  roleFound.id != originalData.value[key]?.id) {
           dataToSend[key] = roleFound
+        }
+      } else if (key === 'providers') {
+        if (formDataCopy[key].length !== originalData.value[key].length) {
+          console.log('providers')
+          dataToSend[key] = formDataCopy[key]?.map((item: IProvider) => {
+            const {checked, ...rest} = item
+            return rest
+          })
+
         }
       }
     }
