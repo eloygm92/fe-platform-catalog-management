@@ -110,6 +110,7 @@ import { useCookies } from 'vue3-cookies'
 import { useRouter } from 'vue-router'
 import { useUserStore } from '@/stores/user'
 import UserForm from '@/components/UserForm.vue'
+import getWatchlist from "@/lib/watchlistData";
 
 const { cookies } = useCookies()
 const router = useRouter()
@@ -151,6 +152,7 @@ const loginButton = () => {
     })
     .finally(() => {
       if (cookies.get('access_token')) {
+        getWatchlist()
         if (window.history.length > 0) router.back()
         else router.push({ name: 'home' })
       }

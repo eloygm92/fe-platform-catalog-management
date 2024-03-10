@@ -42,6 +42,7 @@ declare module 'vue' {
     ElSkeleton: typeof import('element-plus/es')['ElSkeleton']
     ElSlider: typeof import('element-plus/es')['ElSlider']
     ElSubMenu: typeof import('element-plus/es')['ElSubMenu']
+    ElSwitch: typeof import('element-plus/es')['ElSwitch']
     ElTable: typeof import('element-plus/es')['ElTable']
     ElTableColumn: typeof import('element-plus/es')['ElTableColumn']
     ElTag: typeof import('element-plus/es')['ElTag']
@@ -65,10 +66,12 @@ declare module 'vue' {
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
     TheWelcome: typeof import('./src/components/TheWelcome.vue')['default']
+    TypeWatchableFlag: typeof import('./src/components/TypeWatchableFlag.vue')['default']
     UserForm: typeof import('./src/components/UserForm.vue')['default']
     WatchableForm: typeof import('./src/components/WatchableForm.vue')['default']
     WatchableGrid: typeof import('./src/components/WatchableGrid.vue')['default']
     WatchableList: typeof import('./src/components/WatchableList.vue')['default']
+    WatchlistButton: typeof import('./src/components/WatchlistButton.vue')['default']
     WelcomeItem: typeof import('./src/components/WelcomeItem.vue')['default']
   }
   export interface ComponentCustomProperties {

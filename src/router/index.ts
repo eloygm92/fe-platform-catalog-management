@@ -3,6 +3,8 @@ import HomeView from '../views/HomeView.vue'
 import { useCookies } from 'vue3-cookies'
 import { useUserStore } from '@/stores/user'
 import * as APIHandler from '@/lib/APIHandler'
+import getWatchlist from "@/lib/watchlistData";
+import {useWatchlistStore} from "@/stores/watchlist";
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -55,6 +57,11 @@ const router = createRouter({
       path: '/profile',
       name: 'profilePage',
       component: () => import('../views/ProfileView.vue')
+    },
+    {
+      path: '/watchlist',
+      name: 'watchlistPage',
+      component: () => import('../views/WatchlistView.vue')
     }
   ]
 })
@@ -65,6 +72,8 @@ const { cookies } = useCookies()
 
 router.beforeEach(async (to, from, next) => {
   const userStore = useUserStore()
+  const watchlistStore = useWatchlistStore()
+
   let isAuthenticated = cookies.get('access_token')
   const refreshToken = cookies.get('refresh_token')
   const developmentStatus = import.meta.env.VITE_DEVELOPMENT_STATUS !== 'false'
@@ -74,9 +83,11 @@ router.beforeEach(async (to, from, next) => {
   if (!isAuthenticated) {
     if (refreshToken) {
       await APIHandler.refreshToken()
+      await getWatchlist()
       isAuthenticated = cookies.get('access_token')
     } else {
       userStore.setUser(undefined)
+      watchlistStore.setWatchlist(undefined)
     }
   }
 

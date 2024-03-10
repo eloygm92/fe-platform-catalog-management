@@ -25,6 +25,7 @@ import WatchableGrid from '@/components/WatchableGrid.vue'
 import FiltersWatchable from '@/components/FiltersWatchable.vue'
 import { useRoute, useRouter } from 'vue-router'
 import type { IFilters, IWatchable } from '@/lib/types/customTypes'
+import {useWatchlistStore} from "@/stores/watchlist";
 
 const props = defineProps({
   filter_base: {
@@ -35,6 +36,7 @@ const props = defineProps({
 
 const route = useRoute()
 const router = useRouter()
+const watchlistStore = useWatchlistStore()
 
 const sort = ref<string>('popularity:desc')
 const page = ref<number>(1)
@@ -54,7 +56,7 @@ onBeforeMount(async () => {
     }`
   )
   if (response) {
-    watchables.value = response
+    watchables.value = checkWatchlist(response)
   }
 })
 
@@ -82,24 +84,24 @@ const captureFilters = (filters: IFilters) => {
     sort.value = filters.sort
     let filterValue = '';
     if (filters.filter) {
-      const preFilter = filter.value ? filter.value + '&' : ''
+      const preFilter = props.filter_base ? `type:eq:${props.filter_base}` + '&' : ''
       filterValue = preFilter + Object.entries(filters.filter)
           .filter(([key, value]) => {
-            console.log(key, value)
             if (!value)
               return false
 
             const dataSplitted: any[] = value.split(':')
             if (typeof dataSplitted[1] === 'object')
               return dataSplitted[1].length !== 0
-            return dataSplitted[1] !== 'undefined' && dataSplitted[1] !== ''
+            return dataSplitted[1] !== 'undefined' && dataSplitted[1] !== '' && dataSplitted[1] !== ':in'
           })
           .map(([key, value]) => {
             if (key === 'keyword') {
               const keywordSplitted = value.split(',')
               return keywordSplitted.map(keyword => `name:like:${keyword}`).join('&filter=')
             }
-            return key === 'genres.id' || key === 'provider.id' ? `${key}:in:${value}` : `${key}:${value}`
+            //return key === 'genres.id' || key === 'provider.id' ? `${key}:in:${value}` : `${key}:${value}`
+            return `${key}:${value}`
           })
           .join('&filter=')
     }
@@ -136,6 +138,12 @@ watch(
     if (newVal !== oldValue) router.push(newVal)
   }
 )
+
+const checkWatchlist = (watchables: { items: IWatchable[]; totalItems: number; page: number; size: number }) => {
+  watchables.items.map(watchable => watchable.inWatchlist = watchlistStore.watchlist.some(item => item.watchable_id === watchable.id))
+
+  return watchables;
+}
 </script>
 
 <style scoped>

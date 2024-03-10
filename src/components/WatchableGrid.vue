@@ -1,25 +1,28 @@
 <template>
-  <a @click="handleClick" class="cursor-pointer h-auto">
+
     <el-card :body-style="{ padding: '0px', width: '185px'/*'background-image': `url(${image_url})`, width: '185px', height: '276px'*/ }">
-      <IconBookmark class="z-40 watchlist-button relative" />
-      <img :src="image_url" class="w-full image z-10 relative" loading="lazy" :alt="'Poster de ' + watchableData.name" />
-      <PopularsCircleBar :percentage="watchableData.vote_average" class="ml-1.5 rebase-image z-40 relative"/>
-      <div class="grid title-zone">
-        <span class="grid-rows-1 font-bold my-auto">{{ watchableData.name ?? watchableData.original_name }}</span>
-        <span class="grid-rows-2">{{ watchableData.release_date }}</span>
-      </div>
+      <WatchlistButton :watchable_id="watchableData.id" :checked="watchableData.inWatchlist" class="z-40 w-2 watchlist-button relative" />
+      <a @click="handleClick" class="cursor-pointer h-auto">
+        <img :src="image_url" class="w-full image z-10 relative" loading="lazy" :alt="'Poster de ' + watchableData.name" />
+        <TypeWatchableFlag v-if="watchableData.type === 'tv'" :type="watchableData.type" class="z-40 -mt-8 mr-2 relative float-right"/>
+        <PopularsCircleBar :percentage="watchableData.vote_average" class="ml-1.5 rebase-image z-40 relative"/>
+        <div class="grid title-zone">
+          <span class="grid-rows-1 font-bold my-auto">{{ watchableData.name ?? watchableData.original_name }}</span>
+          <span class="grid-rows-2">{{ watchableData.release_date }}</span>
+        </div>
+      </a>
     </el-card>
-  </a>
+
 </template>
 
 <script setup lang="ts">
 import { type PropType, ref } from 'vue'
 import type { IWatchable } from '@/lib/types/customTypes'
-import type { RouteParams } from 'vue-router'
 import { useRouter } from 'vue-router'
 import { useContentStore } from '@/stores/content'
 import PopularsCircleBar from "@/components/PopularsCircleBar.vue";
-import IconBookmark from "@/components/icons/IconBookmark.vue";
+import TypeWatchableFlag from "@/components/TypeWatchableFlag.vue";
+import WatchlistButton from "@/components/WatchlistButton.vue";
 
 const router = useRouter()
 const store = useContentStore()

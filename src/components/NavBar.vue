@@ -25,15 +25,17 @@
 </template>
 
 <script setup lang="ts">
-import { ref, reactive, watch } from 'vue'
+import {ref, reactive, watch, onBeforeMount} from 'vue'
 import { useRouter } from 'vue-router'
 import { useCookies } from 'vue3-cookies'
 import { useUserStore } from '@/stores/user'
 import * as APIHandler from '@/lib/APIHandler'
+import {useWatchlistStore} from "@/stores/watchlist";
 
 const router = useRouter()
 const { cookies } = useCookies()
 const userStore = useUserStore()
+const watchlistStore = useWatchlistStore()
 
 const reload = ref<number>(0)
 const circleUrl = ref<string>(import.meta.env.VITE_CIRCLE_AVATAR_IMG)
@@ -62,7 +64,7 @@ const menu = ref([
 ])
 
 const dataLogin = reactive({
-  index: (menu.value.length + 1).toString(),
+  index: (menu.value.length + 2).toString(),
   title: cookies.get('refresh_token') ? 'Logout' : 'Login',
   path: cookies.get('refresh_token') ? '/logout' : '/login'
 })
@@ -89,6 +91,7 @@ const removedUserData = () => {
   cookies.remove('access_token')
   cookies.remove('refresh_token')
   userStore.setUser(undefined)
+  watchlistStore.setWatchlist(undefined)
   reload.value++
   router.push('/')
 }
@@ -99,12 +102,28 @@ watch(
     if (!newValue) {
       dataLogin.title = 'Login'
       dataLogin.path = '/login'
+      menu.value = menu.value.filter((item) => item.index !== '5')
     } else {
       dataLogin.title = 'Logout'
       dataLogin.path = '/logout'
+      menu.value.push({
+        index: '5',
+        title: 'Watchlist',
+        path: '/watchlist'
+      });
     }
   }
 )
+
+onBeforeMount(() => {
+  if (userStore.user) {
+    menu.value.push({
+      index: '5',
+      title: 'Watchlist',
+      path: '/watchlist'
+    })
+  }
+})
 </script>
 
 <style scoped>

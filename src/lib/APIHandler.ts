@@ -41,6 +41,19 @@ export async function patch(url: string, data: object) {
   })
 }
 
+export async function remove(url: string) {
+  const { cookies } = useCookies()
+  return await fetch(import.meta.env.VITE_API + url, {
+    method: 'DELETE',
+    headers: {
+      Accept: 'application/json',
+      'Content-Type': 'application/json',
+      Authorization: 'Bearer ' + cookies.get('access_token')
+    },
+    credentials: 'include',
+  })
+}
+
 export async function logout(access_token: string) {
   const userStore = useUserStore()
 

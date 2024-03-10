@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="w-64">
   <el-card class="mb-2">
     <el-collapse>
       <el-collapse-item title="Ordenar" name="1">
@@ -187,9 +187,18 @@ watch(() => sort.value, (newValue) => {
 })
 
 const emitChanges = () => {
-  const genresIds = genresList.value.filter(item => item.checked).map(item => item.id)
-  const providersIds = providersList.value.filter(item => item.checked).map(item => item.id)
-  emit('filterChange', {'sort': sort.value, filter: {'keyword': keyword.value ? keyword.value?.replaceAll(' ', ',') : keyword.value, 'vote_average': 'between:' + voteAverage.value, 'vote_count': 'gte:' + voteCount.value, 'provider.id': 'in:' + providersIds, 'genres.id': 'in:' + genresIds, ...calculateAirDate() }})
+  let genresIds = genresList.value.filter(item => item.checked).map(item => item.id)
+  if (genresIds.length !== 0)
+    genresIds = 'in:' + genresIds
+  else
+    genresIds = undefined
+  let providersIds = providersList.value.filter(item => item.checked).map(item => item.id)
+  if (providersIds.length !== 0)
+    providersIds = 'in:' + providersIds
+  else
+    providersIds = undefined
+
+  emit('filterChange', {'sort': sort.value, filter: {'keyword': keyword.value ? keyword.value?.replaceAll(' ', ',') : keyword.value, 'vote_average': 'between:' + voteAverage.value, 'vote_count': 'gte:' + voteCount.value, 'provider.id': providersIds, 'genres.id': genresIds, ...calculateAirDate() }})
 }
 
 /*watch(() => genresList.value, (newValue) => {

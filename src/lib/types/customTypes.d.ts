@@ -12,6 +12,7 @@ export declare type IWatchable = {
   vote_count: number
   created_at: string
   updated_at: string
+  inWatchlist?: boolean
 }
 
 export declare type IUser = {
@@ -65,6 +66,13 @@ export declare type IRole = {
 export declare type IVisualMap = {
   mapped: string,
   visibility: boolean
+}
+
+export declare type IWatchlist = {
+  id?: number
+  user: number | IUser
+  watchable: number | IWatchable
+  view: boolean
 }
 
 export declare type IMapper = {

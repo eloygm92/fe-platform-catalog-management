@@ -91,6 +91,7 @@ import ButtonsForm from '@/components/ButtonsForm.vue'
 import { useUserStore } from '@/stores/user'
 import { ElMessage } from 'element-plus'
 import type { IProvider, IRole } from '@/lib/types/customTypes'
+import getWatchlist from "@/lib/watchlistData";
 
 const userStore = useUserStore()
 
@@ -260,6 +261,7 @@ const sendChanges = async () => {
       ElMessage.success('Usuario creado correctamente')
       const responseData = await response.json()
       userStore.setUser(responseData)
+      await getWatchlist()
       emit('created')
     } else {
       ElMessage.error('Error al crear el usuario')
