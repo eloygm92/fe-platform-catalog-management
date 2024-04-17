@@ -2,9 +2,10 @@
   <el-dialog
     title="Temporadas y Capítulos"
     v-model="dialogVisible"
-    width="50%"
+    width="65%"
     destroy-on-close
     @close="handleButtonClick"
+    custom-class="overflow-x-auto"
   >
     <el-table
       :data="seasonList"
@@ -31,12 +32,12 @@
         </template>
       </el-table-column>
       <el-table-column prop="name" label="Nombre" width="120px" />
-      <el-table-column prop="overview" label="Descripción" />
+      <el-table-column prop="overview" label="Descripción" min-width="200px"/>
     </el-table>
   </el-dialog>
 <!--  <button type="button" @click="handleButtonClick" class="relative bg-white text-black adapt-poster rounded-b z-40 ">Ver Temporadas</button>-->
   <div class="grid">
-  <button type="button" @click="handleButtonClick" class="relative bg-white text-black adapt-poster rounded-b z-40 ">Ver Temporadas</button>
+  <button type="button" @click="handleButtonClick" class="relative bg-white text-black adapt-poster rounded-b z-40 py-1.5">Ver Temporadas</button>
   </div>
 </template>
 
