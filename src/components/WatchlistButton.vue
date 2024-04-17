@@ -4,7 +4,7 @@
     class="squared block"
     :id="'watchlist-' + watchable_id"
   >
-    <IconBookmark :class="useClass"/>
+    <IconBookmark :class="useClass" :size="sizeIcon"/>
   </a>
 </template>
 
@@ -23,6 +23,11 @@ const props = defineProps({
   checked: {
     type: Boolean,
     required: false
+  },
+  sizeIcon: {
+    type: String,
+    required: false,
+    default: '24'
   }
 })
 

@@ -73,11 +73,13 @@ export async function logout(access_token: string) {
 }
 
 export async function refreshToken() {
+  const { cookies } = useCookies();
   return await fetch(import.meta.env.VITE_API + 'auth/refresh', {
     method: 'GET',
     headers: {
       Accept: 'application/json',
-      'Content-Type': 'application/json'
+      'Content-Type': 'application/json',
+      Authorization: 'Bearer ' + cookies.get('refresh_token')
     },
     credentials: 'include'
   }).then((response) => response.json())

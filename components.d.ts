@@ -65,6 +65,7 @@ declare module 'vue' {
     PopularsCircleBar: typeof import('./src/components/PopularsCircleBar.vue')['default']
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
+    SeasonChapterList: typeof import('./src/components/SeasonChapterList.vue')['default']
     TheWelcome: typeof import('./src/components/TheWelcome.vue')['default']
     TypeWatchableFlag: typeof import('./src/components/TypeWatchableFlag.vue')['default']
     UserForm: typeof import('./src/components/UserForm.vue')['default']
@@ -72,6 +73,7 @@ declare module 'vue' {
     WatchableGrid: typeof import('./src/components/WatchableGrid.vue')['default']
     WatchableList: typeof import('./src/components/WatchableList.vue')['default']
     WatchlistButton: typeof import('./src/components/WatchlistButton.vue')['default']
+    WatchProviders: typeof import('./src/components/WatchProviders.vue')['default']
     WelcomeItem: typeof import('./src/components/WelcomeItem.vue')['default']
   }
   export interface ComponentCustomProperties {

@@ -7,12 +7,16 @@ export declare type IWatchable = {
   original_name: string
   release_date: string
   poster_path: string
+  backdrop_path: string
+  tagline: string
   popularity: number
   vote_average: number
   vote_count: number
   created_at: string
   updated_at: string
   inWatchlist?: boolean
+  genres?: IGenre[]
+  provider?: IProvider[]
 }
 
 export declare type IUser = {
@@ -137,4 +141,23 @@ export declare type IMapper = {
     mapped: string,
     visibility: boolean
   }
+}
+
+export declare type IEpisode = {
+  id: number
+  name: string
+  number: number
+  air_date: string
+  overview: string
+}
+
+export declare type ISeason = {
+  id: number
+  name: string
+  overview: string
+  air_date: string
+  episode_count: number
+  season_number: number
+  poster_path: string
+  episodes: IEpisode[]
 }

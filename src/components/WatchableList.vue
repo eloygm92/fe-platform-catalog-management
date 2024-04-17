@@ -140,6 +140,7 @@ watch(
 )
 
 const checkWatchlist = (watchables: { items: IWatchable[]; totalItems: number; page: number; size: number }) => {
+  if (!watchlistStore.watchlist || watchlistStore.watchlist.length === 0) return watchables;
   watchables.items.map(watchable => watchable.inWatchlist = watchlistStore.watchlist.some(item => item.watchable_id === watchable.id))
 
   return watchables;
