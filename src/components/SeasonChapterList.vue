@@ -37,7 +37,7 @@
   </el-dialog>
 <!--  <button type="button" @click="handleButtonClick" class="relative bg-white text-black adapt-poster rounded-b z-40 ">Ver Temporadas</button>-->
   <div class="grid">
-  <button type="button" @click="handleButtonClick" class="relative bg-white text-black adapt-poster rounded-b z-40 py-1.5">Ver Temporadas</button>
+  <button type="button" @click="handleButtonClick" class="relative font-bold bg-gray-950 adapt-poster rounded-b z-40 py-1.5">Ver Temporadas</button>
   </div>
 </template>
 
