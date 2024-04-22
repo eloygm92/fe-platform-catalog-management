@@ -1,19 +1,21 @@
 <template>
-  <div class="flex">
-    <div class="w-fit">
+  <div class="grid lg:grid-cols-7 grid-cols-1 justify-center">
+    <div class="col-span-1">
       <FiltersWatchable @filter-change="captureFilters" />
     </div>
-    <div
-      v-if="watchables.items?.length"
-      v-infinite-scroll="load"
-      infinite-scroll-immediate="false"
-      class="flex justify-start flex-wrap overflow-auto infinite-height"
-    >
-      <WatchableGrid
-        v-for="watchable in watchables.items"
-        :key="watchable.id"
-        :watchable="watchable"
-      />
+    <div class="lg:col-span-6">
+      <div
+        v-if="watchables.items?.length"
+        v-infinite-scroll="load"
+        infinite-scroll-immediate="false"
+        class="flex lg:justify-start justify-center flex-wrap overflow-auto infinite-height"
+      >
+        <WatchableGrid
+          v-for="watchable in watchables.items"
+          :key="watchable.id"
+          :watchable="watchable"
+        />
+      </div>
     </div>
   </div>
 </template>

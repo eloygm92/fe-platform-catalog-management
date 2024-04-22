@@ -1,5 +1,5 @@
 <template>
-  <div class="w-64">
+  <div class="w-full">
   <el-card class="mb-2">
     <el-collapse>
       <el-collapse-item title="Ordenar" name="1">

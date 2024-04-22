@@ -3,7 +3,7 @@
     <el-card v-if="load" :body-style="{padding: '0px'}" >
       <img v-if="watchable.backdrop_path" :src="image_base_url + watchable.backdrop_path" :alt="'Cartel ampliado de' + watchable.name" class="opacity-40 z-0">
       <img v-else src="@/assets/defaultDetailImage.jpg" alt="Imagen por defecto" class="opacity-40 z-0 fix-height" >
-      <div class="z-10 relative rebase p-5">
+      <div class="z-10 relative rebase p-5 mb-14">
         <el-row :gutter="24">
           <el-col :span="7" :offset="1">
             <WatchlistButton v-if="userStore.user" :watchable_id="watchable.id" :checked="inWatchlist" :size-icon="'32'" class="relative z-50 float-right mr-14 -m-2 "/>
@@ -84,7 +84,8 @@ watch(
   background: #021631;
   //background: #2d080d;
   width: 1280px;
-  height: 580px;
+  //height: 580px;
+  height: auto;
   color: #fff;
 }
 

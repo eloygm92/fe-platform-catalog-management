@@ -3,13 +3,13 @@
     mode="horizontal"
     @select="handleSelect"
     class="justify-start"
-    :ellipsis="false"
+    :ellipsis="ellipsable"
     :key="reload"
   >
     <el-menu-item v-for="item in menu" :key="item.index" :index="item.index">
       {{ item.title }}
     </el-menu-item>
-    <div class="flex-grow-personal" />
+    <div class="grow" />
     <el-menu-item v-if="dataLogin.title === 'Login'" :index="dataLogin.index">
       {{ dataLogin.title }}
     </el-menu-item>
@@ -38,6 +38,7 @@ const userStore = useUserStore()
 const watchlistStore = useWatchlistStore()
 
 const reload = ref<number>(0)
+const ellipsable = ref<boolean>(window.innerWidth < 768)
 const circleUrl = ref<string>(import.meta.env.VITE_CIRCLE_AVATAR_IMG)
 
 const menu = ref([
@@ -116,6 +117,12 @@ watch(
 )
 
 onBeforeMount(() => {
+  window.removeEventListener('resize', () => {
+    ellipsable.value=false
+  });
+  window.addEventListener('resize', () => {
+    ellipsable.value = window.innerWidth < 768;
+  })
   if (userStore.user) {
     menu.value.push({
       index: '5',
@@ -127,7 +134,4 @@ onBeforeMount(() => {
 </script>
 
 <style scoped>
-.flex-grow-personal {
-  flex-grow: 1;
-}
 </style>
