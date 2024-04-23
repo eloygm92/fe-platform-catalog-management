@@ -20,6 +20,7 @@ import { ref, shallowRef } from 'vue'
 import ModalForms from '@/components/ModalForms.vue'
 import WatchableForm from '@/components/WatchableForm.vue'
 import UserForm from '@/components/UserForm.vue'
+import ProviderForm from "@/components/ProviderForm.vue";
 
 const emit = defineEmits(['visible', 'reload'])
 
@@ -44,6 +45,8 @@ const selectComponent = (name: string) => {
       return WatchableForm
     case 'user':
       return UserForm
+    case 'provider':
+      return ProviderForm
   }
 }
 

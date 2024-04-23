@@ -33,6 +33,11 @@ const menu = ref<{index: string, title: string, keyTable: string}[]>([
     index: '3',
     title: 'Usuarios',
     keyTable: 'user'
+  },
+  {
+    index: '4',
+    title: 'Proveedores',
+    keyTable: 'provider'
   }
 ])
 

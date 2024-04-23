@@ -63,6 +63,7 @@ declare module 'vue' {
     ModalForms: typeof import('./src/components/ModalForms.vue')['default']
     NavBar: typeof import('./src/components/NavBar.vue')['default']
     PopularsCircleBar: typeof import('./src/components/PopularsCircleBar.vue')['default']
+    ProviderForm: typeof import('./src/components/ProviderForm.vue')['default']
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
     SeasonChapterList: typeof import('./src/components/SeasonChapterList.vue')['default']

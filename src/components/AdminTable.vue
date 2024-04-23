@@ -28,10 +28,10 @@
           </el-popover>
           <!--          <span v-else-if="column.property === 'overview'" class="truncateText" >{{ formatterText(row, column, row[column.property], $index) }}</span>-->
           <img
-            v-else-if="column.property === 'poster_path' && row[column.property]"
+            v-else-if="(column.property === 'poster_path' || column.property === 'logo_path') && row[column.property]"
             :src="calcUrlImg(row[column.property])"
             alt="poster"
-            class="ml-12 w-20 h-20"
+            class="ml-12 w-20 h-20 rounded"
           />
           <div v-else class="text-personal flex justify-center">
             {{ formatterText(row, column, row[column.property], $index) }}
@@ -54,7 +54,7 @@
             </el-button>
           </el-tooltip>
           <el-tooltip
-            v-if="scope['row']['deactivate_at'] === null"
+            v-if="scope['row']['deactivate_at'] === null || scope['row']['deleted_at'] === null"
             content="Desactivar"
             placement="top"
           >
@@ -100,7 +100,7 @@
       v-if="data.length > 0"
       :page-sizes="[10, 20, 50, 100]"
       layout="prev, pager, next, sizes"
-      :total="totalPages"
+      :total="totalElements"
       :current-page="currentPage"
       :page-size="sizePage"
       class="justify-center"
@@ -127,7 +127,7 @@ import IconDelete from '@/components/icons/IconDelete.vue'
 import IconRestore from '@/components/icons/IconRestore.vue'
 import DynamicModal from '@/components/DynamicModal.vue'
 import IconReload from '@/components/icons/IconReload.vue'
-import type { IMapper, IVisualMap } from '@/lib/types/customTypes'
+import type { IVisualMap } from '@/lib/types/customTypes'
 
 const props = defineProps({
   dataType: {
@@ -137,7 +137,7 @@ const props = defineProps({
 })
 
 const data = ref<object[]>([])
-const totalPages = ref<number>(0)
+const totalElements = ref<number>(0)
 const currentPage = ref<number>(1)
 const sizePage = ref<number>(10)
 const edit_id = ref<number>(0)
@@ -213,6 +213,10 @@ const mapperData = ref<Record<string,IVisualMap>>({
   role: {
     mapped: 'Rol',
     visibility: true
+  },
+  deleted_at: {
+    mapped: 'Fecha de Desactivación',
+    visibility: false
   }
 })
 
@@ -223,14 +227,13 @@ const calcLabel = (key: string) => {
 const loadData = async () => {
   const response: { totalItems: number; items: object[]; page: number; size: number } =
     await APIHandler.get(props.dataType + `?page=${currentPage.value}&size=${sizePage.value}`)
-  //totalPages.value = response.totalItems / response.size
   data.value = response?.items
 }
 
 onBeforeMount(async () => {
   const response: { totalItems: number; items: object[]; page: number; size: number } =
     await APIHandler.get(props.dataType + `?page=${currentPage.value}&size=${sizePage.value}`)
-  totalPages.value = response.totalItems / response.size
+  totalElements.value = response.totalItems
 
   data.value = response.items
 })
@@ -247,9 +250,6 @@ const handleSizeChange = (newVal: number) => {
 watch(
   () => currentPage.value,
   async () => {
-    /*const response: { totalItems: number, items: object[], page: number, size: number } = await APIHandler.get(props.dataType + `?page=${currentPage.value}&size=${sizePage.value}`)
-  //totalPages.value = response.totalItems / response.size
-  data.value = response?.items;*/
     await loadData()
   }
 )
@@ -257,9 +257,6 @@ watch(
 watch(
   () => sizePage.value,
   async () => {
-    /*const response: { totalItems: number, items: object[], page: number, size: number } = await APIHandler.get(props.dataType + `?page=${currentPage.value}&size=${sizePage.value}`)
-  //totalPages.value = response.totalItems / response.size
-  data.value = response?.items;*/
     await loadData()
   }
 )
