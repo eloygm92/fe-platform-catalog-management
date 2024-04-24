@@ -1,5 +1,8 @@
 <template>
   <div class="flex flex-row">
+    <SearchboxTable @search="loadData" />
+  </div>
+  <div class="flex flex-row">
     <el-table v-if="data.length > 0" :data="data" stripe>
       <el-table-column
         v-for="item in Object.keys(data[0])"
@@ -128,6 +131,7 @@ import IconRestore from '@/components/icons/IconRestore.vue'
 import DynamicModal from '@/components/DynamicModal.vue'
 import IconReload from '@/components/icons/IconReload.vue'
 import type { IVisualMap } from '@/lib/types/customTypes'
+import SearchboxTable from "@/components/SearchboxTable.vue";
 
 const props = defineProps({
   dataType: {
@@ -224,9 +228,10 @@ const calcLabel = (key: string) => {
   return mapperData.value[key]?.mapped ? mapperData.value[key].mapped : key
 }
 
-const loadData = async () => {
+const loadData = async (searchData: string | undefined = null) => {
   const response: { totalItems: number; items: object[]; page: number; size: number } =
-    await APIHandler.get(props.dataType + `?page=${currentPage.value}&size=${sizePage.value}`)
+    await APIHandler.get(props.dataType + `?page=${currentPage.value}&size=${sizePage.value}${searchData ? '&filter=name:like:' + searchData : ''}`)
+  totalElements.value = response.totalItems
   data.value = response?.items
 }
 

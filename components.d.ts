@@ -66,6 +66,7 @@ declare module 'vue' {
     ProviderForm: typeof import('./src/components/ProviderForm.vue')['default']
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
+    SearchboxTable: typeof import('./src/components/SearchboxTable.vue')['default']
     SeasonChapterList: typeof import('./src/components/SeasonChapterList.vue')['default']
     TheWelcome: typeof import('./src/components/TheWelcome.vue')['default']
     TypeWatchableFlag: typeof import('./src/components/TypeWatchableFlag.vue')['default']
