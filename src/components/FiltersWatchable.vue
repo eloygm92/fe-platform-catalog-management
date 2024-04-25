@@ -126,7 +126,7 @@ onBeforeMount(async () => {
     })
   }
 
-  const providers = await APIHandler.get(`provider`)
+  const providers = await APIHandler.get(`provider/select`)
   if (providers) {
     providersList.value = providers.map((provider: IProvider) => {
       return {checked: false, ...provider}
