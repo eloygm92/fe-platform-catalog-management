@@ -20,6 +20,11 @@ const defaultActive = ref<string>(props.defaultItem)
 
 const menu = ref<{index: string, title: string, keyTable: string}[]>([
   {
+    index: '0',
+    title: 'Configuración',
+    keyTable: 'config'
+  },
+  {
     index: '1',
     title: 'Películas',
     keyTable: 'watchable/movies'

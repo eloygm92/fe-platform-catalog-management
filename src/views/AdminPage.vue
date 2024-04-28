@@ -5,7 +5,8 @@
     @update-vision="handleChange"
     class="w-32 float-left fixed left-0 h-screen"
   />
-  <AdminTable v-if="!loading" :data-type="dataTypeSend" />
+  <ConfigZone v-if="!loading && dataTypeSend == 'config'" />
+  <AdminTable v-else-if="!loading" :data-type="dataTypeSend" />
   <div v-else v-loading.fullscreen.lock="loading" />
 </template>
 
@@ -13,6 +14,7 @@
 import { onBeforeMount, ref } from 'vue'
 import AdminMenu from '@/components/AdminMenu.vue'
 import AdminTable from '@/components/AdminTable.vue'
+import ConfigZone from '@/components/ConfigZone.vue'
 import { useAdminTableStore } from '@/stores/admintable'
 
 const dataTypeSend = ref<string>('')
