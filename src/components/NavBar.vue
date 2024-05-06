@@ -10,6 +10,7 @@
       {{ item.title }}
     </el-menu-item>
     <div class="grow" />
+    <SearchGeneral :index="menu.length + 1" />
     <el-menu-item v-if="dataLogin.title === 'Login'" :index="dataLogin.index">
       {{ dataLogin.title }}
     </el-menu-item>
@@ -31,6 +32,7 @@ import { useCookies } from 'vue3-cookies'
 import { useUserStore } from '@/stores/user'
 import * as APIHandler from '@/lib/APIHandler'
 import {useWatchlistStore} from "@/stores/watchlist";
+import SearchGeneral from "@/components/SearchGeneral.vue";
 
 const router = useRouter()
 const { cookies } = useCookies()

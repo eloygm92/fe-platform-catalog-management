@@ -47,7 +47,7 @@ const watchlistStore = useWatchlistStore()
 
 const watchable = ref<IWatchable>({})
 const load = ref<boolean>(false)
-const inWatchlist = ref<boolean>(watchlistStore.watchlist.some(item => item.watchable_id == route.params.id))
+const inWatchlist = ref<boolean>(watchlistStore.watchlist?.some(item => item.watchable_id == route.params.id))
 const image_base_url = ref<string>(import.meta.env.VITE_IMG_CDN + 'w1280/')
 const image_url = ref<string>(
   watchable.value.poster_path

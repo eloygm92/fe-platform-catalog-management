@@ -3,7 +3,9 @@
     <h1 class="flex justify-center py-2">¿ Donde ver ?</h1>
     <el-row>
       <div class="flex justify-center px-2 w-80">
-        <img v-for="item in providers" :src="calculateProviderImage(item.logo_path)" class="p-1.5 pb-3 rounded-lg" :id="'provider-tag-' + item.id" :alt="'Logo de ' + item.name">
+        <span v-if="providers.length == 0" class="pb-3">No hay proveedores disponibles</span>
+        <img v-else v-for="item in providers" :src="calculateProviderImage(item.logo_path)" class="p-1.5 pb-3 rounded-lg" :id="'provider-tag-' + item.id" :alt="'Logo de ' + item.name">
+
       </div>
     </el-row>
   </div>

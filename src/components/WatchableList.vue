@@ -100,7 +100,7 @@ const captureFilters = (filters: IFilters) => {
           .map(([key, value]) => {
             if (key === 'keyword') {
               const keywordSplitted = value.split(',')
-              return keywordSplitted.map(keyword => `name:like:${keyword}`).join('&filter=')
+              return keywordSplitted.map(keyword => `watchable.name:like:${keyword}`).join('&filter=')
             }
             //return key === 'genres.id' || key === 'provider.id' ? `${key}:in:${value}` : `${key}:${value}`
             return `${key}:${value}`

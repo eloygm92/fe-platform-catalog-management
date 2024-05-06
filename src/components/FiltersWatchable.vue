@@ -114,8 +114,8 @@ const sortOptions = reactive([
   { value: 'vote_average:asc', label: 'Puntuación media ascendente' },
   { value: 'vote_count:desc', label: 'Número de votos descendente' },
   { value: 'vote_count:asc', label: 'Número de votos ascendente' },
-  { value: 'name:asc', label: 'Título ascendente' },
-  { value: 'name:desc', label: 'Título descendente' }
+  { value: 'watchable.name:asc', label: 'Título ascendente' },
+  { value: 'watchable.name:desc', label: 'Título descendente' }
 ])
 
 onBeforeMount(async () => {

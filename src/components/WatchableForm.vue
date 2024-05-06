@@ -235,7 +235,7 @@ onBeforeMount(async () => {
       formData.providers = data?.provider.map((item: IGenre) => item.id) ?? []
     }
 
-    const response = await APIHandler.get('provider')
+    const response = await APIHandler.get('provider/select')
     if (response) {
       optionsProvider.value = response
     }
