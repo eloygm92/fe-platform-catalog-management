@@ -23,6 +23,11 @@
         <el-divider />
 <!--        <div class="font-bold">Proveedores</div>-->
         <el-collapse-item title="Proveedores" name="2">
+        <el-checkbox :checked="false" @change="enableCheckPersonalProvider" :disabled="!userStore?.user || userStore.user?.providers.length < 1" class="justify-center mb-1.5">
+          <template #default>
+            <span>¿Filtrar por mis<br/>&nbsp;&nbsp;proveedores?</span>
+          </template>
+        </el-checkbox>
           <el-link v-for="item in providersList" :key="item.id" @click="enableCheckProvider(item.id)" class="m-1" ><img :src="calculateProviderImage(item.logo_path)" class="rounded opacity-75" :id="'provider-tag-' + item.id" :alt="'Logo de ' + item.name"></el-link>
         </el-collapse-item>
 <!--        <div class="font-bold">Géneros</div>-->
@@ -70,6 +75,7 @@
 import {type CSSProperties, onBeforeMount, reactive, ref, watch} from "vue";
 import * as APIHandler from "@/lib/APIHandler";
 import type { IGenre, IProvider } from '@/lib/types/customTypes'
+import {useUserStore} from "@/stores/user";
 
 interface Mark {
   style: CSSProperties
@@ -79,6 +85,7 @@ interface Mark {
 type Marks = Record<number, Mark | string>
 
 const emit = defineEmits(['filterChange'])
+const userStore = useUserStore()
 
 const genresList = ref<IGenre[]>([])
 const providersList = ref<IProvider[]>([])
@@ -140,6 +147,12 @@ const enableCheckGenres = (id: number) => {
       item.checked = !item.checked
     }
     return item
+  })
+}
+
+const enableCheckPersonalProvider = () => {
+  userStore.user?.providers?.forEach(provider => {
+    enableCheckProvider(provider.id)
   })
 }
 
@@ -227,5 +240,7 @@ watch(() => toAirDate.value, (newValue) => {
 </script>
 
 <style scoped>
-
+.el-checkbox {
+  width: 75%;
+}
 </style>
