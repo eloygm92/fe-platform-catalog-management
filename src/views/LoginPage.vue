@@ -4,7 +4,7 @@
   >
     <div class="max-w-full mx-auto">
       <div
-        class="bg-white shadow-md border border-gray-200 rounded-lg max-w-md p-4 sm:p-6 lg:p-8 dark:bg-gray-800 dark:border-gray-700"
+        class="bg-white shadow-md border border-gray-200 rounded-lg max-w-md p-4 sm:p-6 lg:p-8 max-height overflow-auto dark:bg-gray-800 dark:border-gray-700"
       >
         <form v-if="!visibleRegister" class="space-y-6" @submit.prevent>
           <h3 class="text-xl font-medium text-gray-900 dark:text-white">
@@ -80,7 +80,7 @@
         <el-divider v-if="!visibleRegister" content-position="left"
           >¿Todavía no estas registrado?</el-divider
         >
-        <el-divider v-else content-position="left">¿Estas registrado?</el-divider>
+        <el-divider v-else content-position="center">¿Estas registrado?</el-divider>
         <el-button
           v-if="visibleRegister"
           link
@@ -181,6 +181,15 @@ const createdUser = () => {
 </script>
 
 <style scoped>
+.max-height {
+  max-height: 80vh;
+  -ms-overflow-style: none;
+}
+
+.max-height::-webkit-scrollbar {
+  display: none;
+}
+
 .bounce {
   outline: 0;
   animation-name: bounce;

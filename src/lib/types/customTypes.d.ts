@@ -29,6 +29,7 @@ export declare type IUser = {
   created_at?: string
   updated_at?: string
   deactivate_at?: string
+  providers?: IProvider[]
 }
 
 export declare type IFilters = {

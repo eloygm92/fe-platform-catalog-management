@@ -249,6 +249,7 @@ const sendChanges = async () => {
       const response = await APIHandler.patch('user/' + props.editData, dataToSend)
       if (response.status === 200) {
         ElMessage.success('Cambios realizados correctamente')
+        userStore.setUser(await response.json())
         emit('update:dialogVisible', false)
         emit('reload')
       } else {
