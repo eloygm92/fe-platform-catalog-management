@@ -8,7 +8,7 @@ const route = useRoute()
 </script>
 
 <template>
-  <main v-if="route.fullPath === '/login'">
+  <main v-if="route.fullPath === '/login' || route.name === 'changePassword'">
     <LoginPage />
   </main>
   <el-container v-else class="container mx-auto min-h-fit">

@@ -10,6 +10,7 @@ declare module 'vue' {
     AdminMenu: typeof import('./src/components/AdminMenu.vue')['default']
     AdminTable: typeof import('./src/components/AdminTable.vue')['default']
     ButtonsForm: typeof import('./src/components/ButtonsForm.vue')['default']
+    ChangePassword: typeof import('./src/components/ChangePassword.vue')['default']
     ConfigZone: typeof import('./src/components/ConfigZone.vue')['default']
     DynamicModal: typeof import('./src/components/DynamicModal.vue')['default']
     ElAvatar: typeof import('element-plus/es')['ElAvatar']

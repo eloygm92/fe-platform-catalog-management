@@ -84,3 +84,16 @@ export async function refreshToken() {
     credentials: 'include'
   }).then((response) => response.json())
 }
+
+export async function changePassword(url: string, token: string, data: object) {
+  return await fetch(import.meta.env.VITE_API + url, {
+    method: 'PATCH',
+    headers: {
+      Accept: 'application/json',
+      'Content-Type': 'application/json',
+      Authorization: 'Bearer ' + token
+    },
+    credentials: 'include',
+    body: JSON.stringify(data)
+  })
+}

@@ -6,7 +6,8 @@
       <div
         class="bg-white shadow-md border border-gray-200 rounded-lg max-w-md p-4 sm:p-6 lg:p-8 max-height overflow-auto dark:bg-gray-800 dark:border-gray-700"
       >
-        <form v-if="!visibleRegister" class="space-y-6" @submit.prevent>
+        <ChangePassword v-if="router.currentRoute.value.name == 'changePassword'" />
+        <form v-else-if="router.currentRoute.name != 'changePassword' && !visibleRegister" class="space-y-6" @submit.prevent>
           <h3 class="text-xl font-medium text-gray-900 dark:text-white">
             Inicia sesión en la plataforma
           </h3>
@@ -48,6 +49,7 @@
               :class="inputClass"
               required="false"
             />
+            <el-button link type="primary" @click="router.push({name: 'changePassword'})"><span class="text-xs">¿Has olvidado la contraseña?</span></el-button>
           </div>
           <!--<div class="flex items-start">
             <div class="flex items-start">
@@ -77,6 +79,7 @@
             Inicia Sesion
           </button>
         </form>
+        <div v-if="router.currentRoute.value.name != 'changePassword'">
         <el-divider v-if="!visibleRegister" content-position="left"
           >¿Todavía no estas registrado?</el-divider
         >
@@ -98,7 +101,8 @@
         >
           Registrate
         </el-button>
-        <UserForm v-else @created="createdUser" />
+        </div>
+        <UserForm v-if="router.currentRoute.name != 'changePassword' && visibleRegister" @created="createdUser" />
       </div>
     </div>
   </div>
@@ -111,6 +115,7 @@ import { useRouter } from 'vue-router'
 import { useUserStore } from '@/stores/user'
 import UserForm from '@/components/UserForm.vue'
 import getWatchlist from "@/lib/watchlistData";
+import ChangePassword from "@/components/ChangePassword.vue";
 
 const { cookies } = useCookies()
 const router = useRouter()

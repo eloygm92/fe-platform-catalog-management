@@ -62,6 +62,12 @@ const router = createRouter({
       path: '/watchlist',
       name: 'watchlistPage',
       component: () => import('../views/WatchlistView.vue')
+    },
+    {
+      path: '/change-password',
+      name: 'changePassword',
+      component: () => import('../views/LoginPage.vue'),
+      props: true,
     }
   ]
 })
