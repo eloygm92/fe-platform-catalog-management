@@ -12,22 +12,26 @@ const router = createRouter({
     {
       path: '/',
       name: 'home',
-      component: HomeView
+      component: HomeView,
+      meta: { requiresAuth: false }
     },
     {
       path: '/films',
       name: 'films',
-      component: () => import('../views/MovieList.vue')
+      component: () => import('../views/MovieList.vue'),
+      meta: { requiresAuth: false }
     },
     {
       path: '/series',
       name: 'series',
-      component: () => import('../views/TvList.vue')
+      component: () => import('../views/TvList.vue'),
+      meta: { requiresAuth: false }
     },
     {
       path: '/populars',
       name: 'populars',
-      component: () => import('../views/PopularsList.vue')
+      component: () => import('../views/PopularsList.vue'),
+      meta: { requiresAuth: false }
     },
     {
       path: '/about',
@@ -35,13 +39,15 @@ const router = createRouter({
       // route level code-splitting
       // this generates a separate chunk (About.[hash].js) for this route
       // which is lazy-loaded when the route is visited.
-      component: () => import('../views/AboutView.vue')
+      component: () => import('../views/AboutView.vue'),
+      meta: { requiresAuth: false }
     },
     {
       path: '/watchable/:id',
       name: 'watchableDetail',
       props: true,
-      component: () => import('../views/WatchableDetail.vue')
+      component: () => import('../views/WatchableDetail.vue'),
+      meta: { requiresAuth: false }
     },
     {
       path: '/login',
@@ -51,28 +57,28 @@ const router = createRouter({
     {
       path: '/admin',
       name: 'adminPage',
-      component: () => import('../views/AdminPage.vue')
+      component: () => import('../views/AdminPage.vue'),
+      meta: { requiresAuth: true, requiresAdmin: true }
     },
     {
       path: '/profile',
       name: 'profilePage',
-      component: () => import('../views/ProfileView.vue')
+      component: () => import('../views/ProfileView.vue'),
+      meta: { requiresAuth: true }
     },
     {
       path: '/watchlist',
       name: 'watchlistPage',
-      component: () => import('../views/WatchlistView.vue')
+      component: () => import('../views/WatchlistView.vue'),
+      meta: { requiresAuth: true }
     },
     {
       path: '/change-password',
       name: 'changePassword',
-      component: () => import('../views/LoginPage.vue'),
-      props: true,
+      component: () => import('../views/LoginPage.vue')
     }
   ]
 })
-
-//TODO: Add auth guard and configure non public routes
 
 const { cookies } = useCookies()
 
@@ -97,17 +103,18 @@ router.beforeEach(async (to, from, next) => {
     }
   }
 
-  if (to.name === 'adminPage') {
-    if (!isAuthenticated) {
-      next({ name: 'loginPage' })
-    }
-    if (userStore.user?.role !== 'admin') {
+  if (to.meta.requiresAuth && isAuthenticated) {
+    if (to.meta.requiresAdmin && userStore.user?.role !== 'admin') {
       next({ name: from.name?.toString() })
     }
+    if (to.name === 'loginPage' || to.name === 'changePassword') {
+      next({ name: 'home' })
+    }
     next()
-  } else if (to.name === 'loginPage' && isAuthenticated) {
-    next({ name: 'home' })
+  } else if (to.meta.requiresAuth && !isAuthenticated) {
+    next({ name: 'loginPage' })
   } else next()
+
 })
 
 export default router
