@@ -41,7 +41,7 @@ const watchlistStore = useWatchlistStore()
 
 const reload = ref<number>(0)
 const ellipsable = ref<boolean>(window.innerWidth < 768)
-const circleUrl = ref<string>(import.meta.env.VITE_CIRCLE_AVATAR_IMG)
+const circleUrl = ref<string>(userStore?.user?.avatar_img ?? import.meta.env.VITE_CIRCLE_AVATAR_IMG)
 
 const menu = ref([
   {

@@ -3,8 +3,15 @@ import { RouterView } from 'vue-router'
 import NavBar from '@/components/NavBar.vue'
 import { useRoute } from 'vue-router'
 import LoginPage from '@/views/LoginPage.vue'
+import { ref } from 'vue'
 
 const route = useRoute()
+
+const handleReload = ref<number>(0);
+
+const captureChange = () => {
+  handleReload.value += 1
+}
 </script>
 
 <template>
@@ -13,10 +20,10 @@ const route = useRoute()
   </main>
   <el-container v-else class="container mx-auto min-h-fit">
     <el-header>
-      <NavBar />
+      <NavBar :key="handleReload"/>
     </el-header>
     <el-main>
-      <RouterView />
+      <RouterView @reload="captureChange"/>
     </el-main>
   </el-container>
 </template>

@@ -102,7 +102,7 @@
           Registrate
         </el-button>
         </div>
-        <UserForm v-if="router.currentRoute.name != 'changePassword' && visibleRegister" @created="createdUser" />
+        <UserForm v-if="router.currentRoute.name != 'changePassword' && visibleRegister" @created="createdUser" @reload="$emit('reload')"/>
       </div>
     </div>
   </div>
@@ -121,6 +121,7 @@ const { cookies } = useCookies()
 const router = useRouter()
 const userStore = useUserStore()
 
+const emit = defineEmits(['reload'])
 const password = ref<string | undefined>(undefined)
 const username = ref<string | undefined>(undefined)
 const error = ref<boolean>(false)

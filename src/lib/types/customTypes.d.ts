@@ -30,6 +30,7 @@ export declare type IUser = {
   updated_at?: string
   deactivate_at?: string
   providers?: IProvider[]
+  avatar_img?: string
 }
 
 export declare type IFilters = {

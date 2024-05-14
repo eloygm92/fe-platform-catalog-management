@@ -51,19 +51,18 @@
         </el-form-item>
       </el-col>
     </el-row>
-<!--    <el-row :gutter="24">
+    <el-row v-if="editData" :gutter="24">
       <el-col :span="6">
         <div class="flex justify-center"><span>Avatar Actual</span></div>
         <el-image :close-on-press-escape="true" :src="formData?.avatar_img ? formData.avatar_img : default_image" />
       </el-col>
       <el-col :span="6">
         <div class="flex justify-center"><span>Avatar Nuevo</span></div>
-        <el-image :close-on-press-escape="true" :src="formData?.newImage ? formData.newImage : default_image" />
+        <el-image :close-on-press-escape="true" :src="formData?.newImage ? formData.newImage : default_image" class="rounded"/>
       </el-col>
       <el-col :span="12">
         <el-form-item label="Avatar" prop="avatar">
-&lt;!&ndash;          <el-input v-model="formData.avatar" placeholder="Avatar" />&ndash;&gt;
-          <el-upload drag accept="'jpg','png','jpeg','bmp'" :auto-upload="false" >
+          <el-upload drag accept="'jpg','png','jpeg'" :auto-upload="false" :show-file-list="false" :on-change="previewChanges2">
             <div class="el-upload__text">
               Arrastre aquí los ficheros o <br/><em>haga click para subirlos</em>
             </div>
@@ -73,10 +72,9 @@
               </div>
             </template>
           </el-upload>
-          <el-button type="primary" @click="previewChanges">Mostrar cambio</el-button>
         </el-form-item>
       </el-col>
-    </el-row>-->
+    </el-row>
     <el-divider />
     <ButtonsForm @reset="resetForm(form)" @create="sendChanges" />
   </el-form>
@@ -85,7 +83,7 @@
 
 <script setup lang="ts">
 import { onBeforeMount, reactive, ref } from 'vue'
-import type { FormInstance } from 'element-plus'
+import type {FormInstance, UploadFile, UploadFiles} from 'element-plus'
 import * as APIHandler from '@/lib/APIHandler'
 import ButtonsForm from '@/components/ButtonsForm.vue'
 import { useUserStore } from '@/stores/user'
@@ -114,11 +112,12 @@ interface RuleForm {
   updated_at: string | undefined
   deactivate_at: string | undefined
   providers: IProvider[]
-/*  newImage: string | undefined
-  undefined: string | undefined*/
+  newImage: string | undefined
+  avatar_img: string | undefined
 }
 
-//const default_image = ref<string>(import.meta.env.VITE_CIRCLE_AVATAR_IMG)
+const default_image = ref<string>(import.meta.env.VITE_CIRCLE_AVATAR_IMG)
+const aux_image = ref<Blob | undefined>()
 const providersList = ref<IProvider[]>([])
 const form = ref<FormInstance>()
 const loader = ref<boolean>(true)
@@ -131,9 +130,9 @@ const formData = reactive<RuleForm>({
   updated_at: undefined,
   deactivate_at: undefined,
   role: undefined,
-  providers: []/*,
+  providers: [],
   newImage: undefined,
-  avatar: undefined*/
+  avatar_img: undefined
 })
 const optionRoles = ref<IRole[]>([])
 const originalData = ref<any>({
@@ -145,9 +144,9 @@ const originalData = ref<any>({
   updated_at: undefined,
   deactivate_at: undefined,
   role: undefined,
-  providers: []/*,
+  providers: [],
   newImage: undefined,
-  avatar: undefined*/
+  avatar_img: undefined
 })
 
 const enableCheckProvider = (id: number | string) => {
@@ -158,14 +157,20 @@ const enableCheckProvider = (id: number | string) => {
     if (item.checked) {
       document.getElementById('provider-tag-' + item.id)?.classList.add('border','border-blue-500')
       document.getElementById('provider-tag-' + item.id)?.classList.remove('opacity-75')
-      formData.providers.push(item);
+      //formData.providers.push(item);
     } else {
-      formData.providers = formData.providers.filter(elem => item.id !== elem.id)
+      //formData.providers = formData.providers.filter(elem => item.id !== elem.id)
       document.getElementById('provider-tag-' + item.id)?.classList.remove('border','border-blue-500', 'opacity-75')
       document.getElementById('provider-tag-' + item.id)?.classList.add('opacity-75')
     }
     return item
   })
+  formData.providers = providersList.value
+    .filter(item => item.checked)
+    .map(item => {
+      const {checked, ...rest} = item
+      return rest
+    })
 }
 
 const calculateProviderImage = (url: string) => {
@@ -182,22 +187,7 @@ onBeforeMount(async () => {
   }
 
   if (props.editData) {
-    const data: any = await APIHandler.get('user/' + props.editData)
-    if (data) {
-      originalData.value = Object.assign({}, data)
-      formData.username = data.username
-      formData.email = data.email
-      formData.role = data.role.name
-      formData.created_at = data.created_at
-      formData.updated_at = data.updated_at
-      formData.deactivate_at = data.deactivate_at
-      //formData.providers = data.providers
-      if (data.providers.length > 0) {
-        for await (const provider of data.providers) {
-          enableCheckProvider(provider.id)
-        }
-      }
-    }
+    await getUserData();
   }
 
   const responseRole = await APIHandler.get('user/roles')
@@ -211,22 +201,21 @@ const resetForm = (formEl: FormInstance | undefined) => {
   formEl.resetFields()
 }
 
-/*const previewChanges = () => {
-  const file = formData.avatar
-  console.log(formData)
-  if (file) {
-    const createBlob = new Blob([file], { type: 'image/jpeg' });
-    formData.newImage = URL.createObjectURL(createBlob);
-    console.log(formData.newImage)
+const previewChanges2 = async (uploadFile: UploadFile, uploadFiles: UploadFiles) => {
+  if (uploadFile) {
+    aux_image.value = await adaptResultToBase64(uploadFile.raw)
+    formData.newImage = URL.createObjectURL(uploadFile.raw);
+  } else {
+    aux_image.value = undefined
   }
-}*/
+}
 
 const sendChanges = async () => {
   if (props.editData) {
     const dataToSend: any = {}
     const formDataCopy: any = Object.assign({}, formData)
     for (const key in formDataCopy) {
-      if (key !== 'role' && key !== 'providers' && formDataCopy[key] !== originalData.value[key]) {
+      if (key !== 'role' && key !== 'providers' && key !== 'newImage' && key !== 'avatar_img' && formDataCopy[key] !== originalData.value[key]) {
         dataToSend[key] = formDataCopy[key]
       } else if (key === 'role') {
         const roleFound = optionRoles.value.find((item) => item.id === formDataCopy[key])
@@ -235,14 +224,18 @@ const sendChanges = async () => {
         }
       } else if (key === 'providers') {
         if (formDataCopy[key].length !== originalData.value[key].length) {
-          console.log('providers')
-          dataToSend[key] = formDataCopy[key]?.map((item: IProvider) => {
-            const {checked, ...rest} = item
-            return rest
-          })
+          dataToSend[key] = formDataCopy[key]?.reduce((acc, item: IProvider) => {
+            if (item.checked) {
+              const {checked, ...rest} = item
+              acc.push(rest)
+            }
+            return acc
+          },[])
 
         }
-      }
+      } else if (key === 'newImage' && formDataCopy[key]) {
+        dataToSend['avatar_img'] = aux_image.value
+      } else if (key === 'avatar_img') {}
     }
 
     if (Object.keys(dataToSend).length > 0) {
@@ -250,6 +243,7 @@ const sendChanges = async () => {
       if (response.status === 200) {
         ElMessage.success('Cambios realizados correctamente')
         userStore.setUser(await response.json())
+        await getUserData()
         emit('update:dialogVisible', false)
         emit('reload')
       } else {
@@ -267,6 +261,42 @@ const sendChanges = async () => {
     } else {
       ElMessage.error('Error al crear el usuario')
     }
+  }
+}
+
+const adaptResultToBase64 = (file: Blob) => {
+  const reader = new FileReader();
+  return new Promise((resolve, reject) => {
+    reader.onload = () => {
+      resolve(reader.result)
+    }
+    reader.onerror = reject
+    reader.readAsDataURL(file)
+  })
+}
+
+const getUserData = async () => {
+  const data: any = await APIHandler.get('user/' + props.editData)
+  if (data) {
+    originalData.value = Object.assign({}, data)
+    formData.username = data.username
+    formData.email = data.email
+    formData.role = data.role.name
+    formData.created_at = data.created_at
+    formData.updated_at = data.updated_at
+    formData.deactivate_at = data.deactivate_at
+    if (data.avatar_img) {
+      //formData.avatar_img = URL.createObjectURL(data.avatar_img)
+      formData.avatar_img = data.avatar_img
+    }
+    //formData.providers = data.providers
+    if (data.providers.length > 0) {
+      for (const provider of data.providers) {
+        enableCheckProvider(provider.id)
+      }
+    }
+    formData.newImage = undefined
+    formData.avatar = undefined
   }
 }
 </script>
