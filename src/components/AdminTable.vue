@@ -1,6 +1,9 @@
 <template>
   <div class="flex flex-row">
     <SearchboxTable @search="loadData" />
+    <el-tooltip content="cargar y actualizar proveedores" placement="top">
+      <el-button v-if="dataType == 'provider'" link type="primary" class="ml-2" @click="loadAllProviders"><IconDownload /></el-button>
+    </el-tooltip>
   </div>
   <div class="flex flex-row">
     <el-table v-if="data.length > 0" :data="data" stripe>
@@ -132,6 +135,7 @@ import DynamicModal from '@/components/DynamicModal.vue'
 import IconReload from '@/components/icons/IconReload.vue'
 import type { IVisualMap } from '@/lib/types/customTypes'
 import SearchboxTable from "@/components/SearchboxTable.vue";
+import IconDownload from "@/components/icons/IconDownload.vue";
 
 const props = defineProps({
   dataType: {
@@ -321,6 +325,14 @@ const editElem = (id: string) => {
 const extractElem = async (id: number, type: string) => {
   await APIHandler.get('Synchro' + type.charAt(0).toUpperCase() + type.slice(1) + '/' + id)
   ElMessage.success('Extracción realizada correctamente')
+}
+
+const loadAllProviders = async () => {
+  const response = await APIHandler.get('extractor/providers')
+  if (response) {
+    ElMessage.success('Proveedores cargados correctamente')
+    await loadData()
+  }
 }
 </script>
 
