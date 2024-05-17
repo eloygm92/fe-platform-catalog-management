@@ -75,7 +75,14 @@ const router = createRouter({
     {
       path: '/change-password',
       name: 'changePassword',
-      component: () => import('../views/LoginPage.vue')
+      component: () => import('../views/LoginPage.vue'),
+      meta: { requiresAuth: false }
+    },
+    {
+      path: '/maintenance',
+      name: 'maintenance',
+      component: () => import('../views/MaintenanceView.vue'),
+      meta: { requiresAuth: false }
     },
     {
       path: '/:pathMatch(.*)*',
@@ -94,6 +101,13 @@ router.beforeEach(async (to, from, next) => {
 
   let isAuthenticated = cookies.get('access_token')
   const refreshToken = cookies.get('refresh_token')
+  const isMaintenance = await APIHandler.isMaintenance();
+
+  if (isMaintenance && to.name != 'maintenance') {
+    if (to.name === 'loginPage' || to.name === 'changePassword') next()
+    else if (userStore.user?.role !== 'admin') next({name: 'maintenance'})
+  }
+
   const developmentStatus = import.meta.env.VITE_DEVELOPMENT_STATUS !== 'false'
   if (developmentStatus && to.name !== 'loginPage' && !isAuthenticated && !refreshToken)
     next({ name: 'loginPage' })

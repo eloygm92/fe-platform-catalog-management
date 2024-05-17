@@ -97,3 +97,9 @@ export async function changePassword(url: string, token: string, data: object) {
     body: JSON.stringify(data)
   })
 }
+
+export async function isMaintenance() {
+  return await fetch(import.meta.env.VITE_API + 'config/maintenance')
+    .then((response) => response.json())
+    .then((data) => !!data[0].value_status)
+}

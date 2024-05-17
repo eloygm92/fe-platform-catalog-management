@@ -3,15 +3,25 @@ import { RouterView } from 'vue-router'
 import NavBar from '@/components/NavBar.vue'
 import { useRoute } from 'vue-router'
 import LoginPage from '@/views/LoginPage.vue'
-import { ref } from 'vue'
+import {onBeforeMount, ref} from 'vue'
+import { useUserStore } from "@/stores/user";
+import {useMaintenanceStore} from "@/stores/maintenance"
+import * as APIHandler from '@/lib/APIHandler'
 
 const route = useRoute()
+const userStore = useUserStore()
+const maintenanceStore = useMaintenanceStore()
 
 const handleReload = ref<number>(0);
 
 const captureChange = () => {
   handleReload.value += 1
 }
+
+onBeforeMount(async () => {
+  const response = await APIHandler.isMaintenance()
+  maintenanceStore.setMaintenance(response)
+})
 </script>
 
 <template>
@@ -20,7 +30,7 @@ const captureChange = () => {
   </main>
   <el-container v-else class="container mx-auto min-h-fit">
     <el-header>
-      <NavBar :key="handleReload"/>
+      <NavBar v-if="!maintenanceStore.maintenance || (userStore.user?.role == 'admin' && maintenanceStore?.maintenance)" :key="handleReload"/>
     </el-header>
     <el-main>
       <RouterView @reload="captureChange"/>

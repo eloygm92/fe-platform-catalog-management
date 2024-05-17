@@ -17,6 +17,9 @@ import AdminTable from '@/components/AdminTable.vue'
 import ConfigZone from '@/components/ConfigZone.vue'
 import { useAdminTableStore } from '@/stores/admintable'
 
+const emit = defineEmits(['reload'])
+
+
 const dataTypeSend = ref<string>('')
 const loading = ref<boolean>(false)
 const defaultIndex = ref<string>('')

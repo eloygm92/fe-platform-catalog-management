@@ -24,6 +24,9 @@
 
 import {onBeforeMount,ref} from "vue";
 import * as APIHandler from "@/lib/APIHandler";
+import {useMaintenanceStore} from "@/stores/maintenance";
+
+const maintenanceStore = useMaintenanceStore()
 
 const data = ref<{name: string, value: number}[]>([])
 const mapperData = ref<Record<string, string>>({
@@ -41,8 +44,10 @@ onBeforeMount(async () => {
 const handleChange = async (val: boolean | string | number, fieldName: any) => {
   const response = await APIHandler.patch(`config/${fieldName}/${val}`, {})
   if (response.ok) {
+    if (fieldName === 'maintenance') maintenanceStore.setMaintenance(Boolean(val))
     await getData()
-  }
+    ElMessage.success('Se ha actualizado correctamente')
+  } else ElMessage.error('Ha ocurrido un error')
 }
 
 const getData = async () => {
