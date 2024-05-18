@@ -1,12 +1,12 @@
 {
-  "routes": [
+  "rewrites": [
     {
-      "src": "/api/(.*)",
-      "dest": "https://be-platform-catalog-management.onrender.com/$1"
+      "source": "/api/(.*)",
+      "destination": "https://be-platform-catalog-management.onrender.com/$1"
     },
     {
-      "src": "/(.*)",
-      "dest": "/"
+      "source": "/(.*)",
+      "destination": "/"
     }
   ]
 }
