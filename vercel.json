@@ -5,8 +5,8 @@
       "dest": "https://be-platform-catalog-management.onrender.com/$1"
     },
     {
-      "src": "/([^.]+)",
-      "dest": "/$1"
+      "src": "/(.*)",
+      "dest": "/"
     }
   ]
 }
