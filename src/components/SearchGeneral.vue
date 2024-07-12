@@ -1,6 +1,6 @@
 <template>
-  <el-menu-item :index="String(index)" :class="'white_background ' + sizeClass">
-    <el-select v-model="selectValue" filterable remote placeholder=" " :remote-method="doDelayedSearch" @change="handleSelect" @focus="handleClick" @blur="handleClick" class="search_general">
+  <el-menu-item :index="String(index)" :class="'white_background ' + sizeClass" @keydown.space.prevent @keyup.space.prevent>
+    <el-select v-model="selectValue" filterable remote placeholder=" " :remote-method="doDelayedSearch" @change="handleSelect" @focus="handleClick" @blur="handleClick" class="search_general" @keydown.space.prevent @keyup.space.prevent >
       <template #prefix>
         <IconSearch />
       </template>

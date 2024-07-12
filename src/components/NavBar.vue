@@ -5,6 +5,8 @@
     class="justify-start"
     :ellipsis="ellipsable"
     :key="reload"
+    @keydown.space.prevent
+    @keyup.space.prevent
   >
     <el-menu-item v-for="item in menu" :key="item.index" :index="item.index">
       {{ item.title }}
@@ -73,7 +75,8 @@ const dataLogin = reactive({
 })
 
 const handleSelect = (key: string) => {
-  if (Number(key) < menu.value.length + 1) router.push(menu.value[Number(key) - 1].path)
+  if (Number(key) < menu.value.length + 2 && Number(key) != menu.value.length + 1) router.push(menu.value[Number(key) - 1].path)
+  else if (Number(key) === menu.value.length + 1) {}
   else {
     if (dataLogin.title === 'Logout' && key === dataLogin.index + '-2') {
       if (!userStore.user?.id) removedUserData()
