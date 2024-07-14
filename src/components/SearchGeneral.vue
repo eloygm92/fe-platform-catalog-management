@@ -58,7 +58,7 @@ const handleSelect = (value: string) => {
     selectValue.value = ''
     setTimeout(() => {
       emit('reload-key')
-    }, 200)
+    }, 500)
   }
 }
 
