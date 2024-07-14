@@ -5,7 +5,7 @@
     width="65%"
     destroy-on-close
     @close="handleButtonClick"
-    custom-class="overflow-x-auto"
+    class="overflow-x-auto"
   >
     <el-table
       :data="seasonList"

@@ -13,9 +13,14 @@ const userStore = useUserStore()
 const maintenanceStore = useMaintenanceStore()
 
 const handleReload = ref<number>(0);
+const contentReload = ref<number>(0);
 
 const captureChange = () => {
   handleReload.value += 1
+}
+
+const handleContentReload = () => {
+  contentReload.value += 1
 }
 
 onBeforeMount(async () => {
@@ -30,10 +35,10 @@ onBeforeMount(async () => {
   </main>
   <el-container v-else class="container mx-auto min-h-fit">
     <el-header>
-      <NavBar v-if="!maintenanceStore.maintenance || (userStore.user?.role == 'admin' && maintenanceStore?.maintenance)" :key="handleReload"/>
+      <NavBar v-if="!maintenanceStore.maintenance || (userStore.user?.role == 'admin' && maintenanceStore?.maintenance)" :key="handleReload" @reload-key="handleContentReload"/>
     </el-header>
-    <el-main>
-      <RouterView @reload="captureChange"/>
+    <el-main :key="contentReload">
+      <RouterView @reload="captureChange" />
     </el-main>
   </el-container>
 </template>

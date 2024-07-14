@@ -12,7 +12,7 @@
       {{ item.title }}
     </el-menu-item>
     <div class="grow" />
-    <SearchGeneral :index="menu.length + 1" />
+    <SearchGeneral :index="menu.length + 1" @reload-key="emit('reload-key')"/>
     <el-menu-item v-if="dataLogin.title === 'Login'" :index="dataLogin.index">
       {{ dataLogin.title }}
     </el-menu-item>
@@ -35,6 +35,8 @@ import { useUserStore } from '@/stores/user'
 import * as APIHandler from '@/lib/APIHandler'
 import {useWatchlistStore} from "@/stores/watchlist";
 import SearchGeneral from "@/components/SearchGeneral.vue";
+
+const emit = defineEmits(['reload-key'])
 
 const router = useRouter()
 const { cookies } = useCookies()

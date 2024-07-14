@@ -21,6 +21,8 @@ import IconSearch from "@/components/icons/IconSearch.vue";
 import * as APIHandler from "@/lib/APIHandler";
 import { useRouter } from "vue-router";
 
+const emit = defineEmits(['reload-key'])
+
 const props = defineProps({
   index: {
     type: Number,
@@ -54,6 +56,9 @@ const handleSelect = (value: string) => {
     router.push(`/watchable/${value}`)
     options.value = []
     selectValue.value = ''
+    setTimeout(() => {
+      emit('reload-key')
+    }, 200)
   }
 }
 
