@@ -225,13 +225,15 @@ const sendChanges = async () => {
       } else if (key === 'providers') {
         if (formDataCopy[key].length !== originalData.value[key].length) {
           dataToSend[key] = formDataCopy[key]?.reduce((acc, item: IProvider) => {
-            if (item.checked) {
+            /*if (item.checked) {
               const {checked, ...rest} = item
               acc.push(rest)
+            }*/
+            if (item) {
+              acc.push(item)
             }
             return acc
           },[])
-
         }
       } else if (key === 'newImage' && formDataCopy[key]) {
         dataToSend['avatar_img'] = aux_image.value
